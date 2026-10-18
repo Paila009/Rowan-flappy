@@ -1,4 +1,27 @@
 import { MODES, createGame, flap, step, reset } from './engine.mjs';
+import { PilotAudio } from './audio.mjs';
+
+const PILOTS = {
+  rowan: {
+    name: 'Rowan', portrait: './assets/rowan.png', title: 'Flappy<br><span>Rowan.</span>',
+    description: 'The sky is the limit.<br>The pipes are the problem.',
+    boarding: 'FIRST CLASS HUMAN. ECONOMY WINGS.', airline: 'ROWAN AIRLINES',
+    personality: 'ONE VOICE. ONE VERY JUDGY DOG.', defeat: 'dog',
+    voices: [{ src: './assets/rowan-audio.mp3' }],
+    sky: ['#c2e4d9', '#dcecdc', '#e9edd7'], trail: '#fff9e5',
+  },
+  specs: {
+    name: 'Captain Specs', portrait: './assets/captain-specs.png', title: 'Captain<br><span>Specs.</span>',
+    description: 'Clear vision. Blurry flight plan.<br>In-flight cake is not optional.',
+    boarding: '20/20 VISION. 0/20 LANDINGS.', airline: 'SPECS AIR · CAKE CLASS',
+    personality: 'TWO VOICES. ZERO FROSTING IMMUNITY.', defeat: 'cake',
+    voices: [
+      { src: './assets/specs-voice-1.ogg', fallback: './assets/specs-voice-1.mp3' },
+      { src: './assets/specs-voice-2.ogg', fallback: './assets/specs-voice-2.mp3' },
+    ],
+    sky: ['#ded4ed', '#efe1e7', '#f1ebd9'], trail: '#f7b2b9',
+  },
+};
 
 const $ = (id) => document.getElementById(id);
 const canvas = $('game-canvas');
@@ -16,6 +39,8 @@ const storage = {
 };
 let selectedMode = storage.get('rowan-mode', 'classic');
 if (!Object.hasOwn(MODES, selectedMode)) selectedMode = 'classic';
+let selectedPilot = storage.get('rowan-pilot', 'rowan');
+if (!Object.hasOwn(PILOTS, selectedPilot)) selectedPilot = 'rowan';
 let state = createGame(selectedMode);
 let paused = false;
 let lastTime = 0;
@@ -27,101 +52,27 @@ let shake = 0;
 let particles = [];
 let helpPausedFlight = false;
 let lastFlapTime = -1000;
-const bests = Object.fromEntries(Object.keys(MODES).map((mode) => {
-  const value = Number(storage.get(`rowan-best-${mode}`, '0'));
-  return [mode, Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0];
-}));
+// Rowan keeps his original record keys so existing players retain their scores.
+const recordKey = (pilot, mode) => pilot === 'rowan' ? `rowan-best-${mode}` : `rowan-best-${pilot}-${mode}`;
+const bests = Object.fromEntries(Object.keys(PILOTS).map((pilot) => [pilot,
+  Object.fromEntries(Object.keys(MODES).map((mode) => {
+    const value = Number(storage.get(recordKey(pilot, mode), '0'));
+    return [mode, Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0];
+  })),
+]));
+const currentPilot = () => PILOTS[selectedPilot];
+const currentBest = () => bests[selectedPilot][selectedMode];
 
-class RowanAudio {
-  constructor() {
-    this.muted = storage.get('rowan-muted', 'false') === 'true';
-    this.context = null;
-    this.buffer = null;
-    this.voices = [];
-    this.pool = Array.from({ length: 3 }, () => {
-      const audio = new Audio(new URL('./assets/rowan-audio.mp3', import.meta.url).href);
-      audio.preload = 'auto';
-      audio.volume = 0.65;
-      return audio;
-    });
-    this.poolIndex = 0;
-    this.bytes = fetch(new URL('./assets/rowan-audio.mp3', import.meta.url))
-      .then((response) => { if (!response.ok) throw new Error('Audio unavailable'); return response.arrayBuffer(); })
-      .catch(() => null);
-  }
-  unlock() {
-    try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!this.context && AudioContext) {
-        this.context = new AudioContext();
-        this.master = this.context.createGain();
-        this.master.gain.value = this.muted ? 0 : 0.65;
-        this.master.connect(this.context.destination);
-        this.bytes.then((bytes) => bytes && this.context.decodeAudioData(bytes.slice(0)))
-          .then((buffer) => { this.buffer = buffer; }).catch(() => {});
-      }
-      if (this.context?.state === 'suspended') this.context.resume().catch(() => {});
-    } catch { /* The HTML audio pool supports browsers without Web Audio. */ }
-  }
-  playFlap() {
-    if (this.muted) return;
-    this.unlock();
-    if (this.context?.state === 'running' && this.buffer) {
-      while (this.voices.length >= 2) {
-        const oldest = this.voices.shift();
-        oldest.gain.gain.setTargetAtTime(0, this.context.currentTime, 0.015);
-        try { oldest.source.stop(this.context.currentTime + 0.06); } catch {}
-      }
-      const source = this.context.createBufferSource();
-      const gain = this.context.createGain();
-      source.buffer = this.buffer;
-      source.connect(gain);
-      gain.connect(this.master);
-      const voice = { source, gain };
-      this.voices.push(voice);
-      source.onended = () => {
-        this.voices = this.voices.filter((item) => item !== voice);
-        source.disconnect(); gain.disconnect();
-      };
-      source.start();
-      return;
-    }
-    const audio = this.pool[this.poolIndex++ % this.pool.length];
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
-  }
-  chime(record = false) {
-    if (this.muted || this.context?.state !== 'running') return;
-    const at = this.context.currentTime;
-    (record ? [523.25, 659.25, 783.99] : [659.25, 880]).forEach((frequency, i) => {
-      const oscillator = this.context.createOscillator();
-      const gain = this.context.createGain();
-      oscillator.type = 'sine'; oscillator.frequency.value = frequency;
-      gain.gain.setValueAtTime(0, at + i * 0.08);
-      gain.gain.linearRampToValueAtTime(0.12, at + i * 0.08 + 0.015);
-      gain.gain.exponentialRampToValueAtTime(0.001, at + i * 0.08 + 0.24);
-      oscillator.connect(gain); gain.connect(this.master);
-      oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
-      oscillator.start(at + i * 0.08); oscillator.stop(at + i * 0.08 + 0.25);
-    });
-  }
-  silence() {
-    for (const { source } of this.voices) { try { source.stop(); } catch {} }
-    this.voices = [];
-    this.pool.forEach((audio) => { audio.pause(); audio.currentTime = 0; });
-  }
-  toggle() {
-    this.muted = !this.muted;
-    storage.set('rowan-muted', this.muted);
-    if (this.master) this.master.gain.value = this.muted ? 0 : 0.65;
-    if (this.muted) this.silence();
-    updateSoundButton();
-  }
-}
-const sound = new RowanAudio();
-const portrait = new Image();
-portrait.src = new URL('./assets/rowan.png', import.meta.url).href;
-portrait.onerror = () => toast('Pilot photo could not load. Rowan is flying incognito.');
+const sound = new PilotAudio({
+  muted: storage.get('rowan-muted', 'false') === 'true',
+  onMuteChange(muted) { storage.set('rowan-muted', muted); updateSoundButton(); },
+});
+const portraits = Object.fromEntries(Object.entries(PILOTS).map(([id, pilot]) => {
+  const image = new Image();
+  image.src = new URL(pilot.portrait, import.meta.url).href;
+  image.onerror = () => toast('Pilot photo could not load. Flying incognito.');
+  return [id, image];
+}));
 
 function updateSoundButton() {
   $('sound-button').setAttribute('aria-pressed', String(sound.muted));
@@ -136,8 +87,30 @@ function toast(message, duration = 1800) {
   toastTimeout = setTimeout(() => $('game-toast').classList.remove('show'), duration);
 }
 function updateBest() {
-  $('personal-best').textContent = String(bests[selectedMode]).padStart(2, '0');
-  $('hud-best').textContent = bests[selectedMode];
+  $('personal-best').textContent = String(currentBest()).padStart(2, '0');
+  $('hud-best').textContent = currentBest();
+  $('record-label').textContent = `${currentPilot().name.toUpperCase()}'S PERSONAL BEST`;
+}
+function updatePilot() {
+  const pilot = currentPilot();
+  document.body.dataset.pilot = selectedPilot;
+  frame.dataset.defeat = pilot.defeat;
+  $('ready-portrait').src = portraits[selectedPilot].src;
+  $('ready-portrait').alt = `${pilot.name}, your fearless pilot`;
+  $('ready-title').innerHTML = pilot.title;
+  $('ready-description').innerHTML = pilot.description;
+  $('boarding-label').textContent = pilot.boarding;
+  $('airline-name').textContent = pilot.airline;
+  $('pilot-personality').textContent = pilot.personality;
+  $('voice-preview').setAttribute('aria-label', `Preview ${pilot.name}'s voice`);
+  canvas.setAttribute('aria-label', `Fly as ${pilot.name}. Press Space or Up Arrow, click, or tap to flap. Avoid pipes and the ground.`);
+  $('bonk-scene').hidden = pilot.defeat !== 'dog';
+  $('cake-scene').hidden = pilot.defeat !== 'cake';
+  sound.setPilot({ id: selectedPilot, voices: pilot.voices.map((voice) => ({
+    src: new URL(voice.src, import.meta.url).href,
+    ...(voice.fallback ? { fallback: new URL(voice.fallback, import.meta.url).href } : {}),
+  })) });
+  updateBest();
 }
 function updateModes() {
   document.querySelectorAll('.mode-button').forEach((button) => {
@@ -147,6 +120,13 @@ function updateModes() {
     button.disabled = state.status === 'playing';
   });
   $('mode-description').textContent = modeDescriptions[selectedMode];
+  document.querySelectorAll('.pilot-button').forEach((button) => {
+    const selected = button.dataset.pilot === selectedPilot;
+    button.classList.toggle('is-selected', selected);
+    button.setAttribute('aria-pressed', String(selected));
+    button.disabled = state.status === 'playing';
+  });
+  $('voice-preview').disabled = state.status === 'playing';
   updateBest();
 }
 function showScreen(screen) {
@@ -170,7 +150,7 @@ function beginFlight() {
   lastTime = performance.now();
   lastFlapTime = lastTime;
   showScreen('playing');
-  announce(`${MODES[selectedMode].label} flight started. Tap or press Space to flap.`);
+  announce(`${currentPilot().name}'s ${MODES[selectedMode].label} flight started. Tap or press Space to flap.`);
   canvas.focus({ preventScroll: true });
 }
 function flapInput() {
@@ -186,7 +166,7 @@ function flapInput() {
   lastFlapTime = now;
   if (flap(state)) {
     sound.playFlap();
-    if (!reducedMotion) for (let i = 0; i < 3; i++) particles.push({ x: state.bird.x - 20, y: state.bird.y + 9, vx: -35 - Math.random() * 35, vy: 15 + Math.random() * 40, age: 0, life: 0.35, color: '#fff9e5', size: 2 + Math.random() * 3 });
+    if (!reducedMotion) for (let i = 0; i < 3; i++) particles.push({ x: state.bird.x - 20, y: state.bird.y + 9, vx: -35 - Math.random() * 35, vy: 15 + Math.random() * 40, age: 0, life: 0.35, color: currentPilot().trail, size: 2 + Math.random() * 3 });
   }
 }
 function setPaused(value) {
@@ -201,21 +181,27 @@ function endFlight() {
   gameOverAt = performance.now();
   sound.silence();
   if (!reducedMotion) shake = 0.22;
-  const newBest = state.score > bests[selectedMode];
+  const cake = currentPilot().defeat === 'cake';
+  const newBest = state.score > currentBest();
   if (newBest) {
-    bests[selectedMode] = state.score;
-    storage.set(`rowan-best-${selectedMode}`, state.score);
-    sound.chime(true);
+    bests[selectedPilot][selectedMode] = state.score;
+    storage.set(recordKey(selectedPilot, selectedMode), state.score);
   }
   $('final-score').textContent = state.score;
-  $('final-best').textContent = bests[selectedMode];
-  $('result-stamp').textContent = newBest ? 'A NEW PERSONAL BEST!' : 'THE SHIH TZU HAS A WORD';
+  $('final-best').textContent = currentBest();
+  $('result-stamp').textContent = newBest ? 'A NEW PERSONAL BEST!' : cake ? 'COMPLIMENTARY IN-FACE MEAL' : 'THE SHIH TZU HAS A WORD';
   $('result-stamp').classList.toggle('is-record', newBest);
-  $('result-title').innerHTML = newBest ? 'New record.<br><span>Still bonked.</span>' : 'Bad flight.<br><span>Dog fight.</span>';
-  $('result-message').textContent = state.score === 0 ? 'Your flight instructor is deeply disappointed.' : state.score < 5 ? 'The Shih Tzu would like to speak to the pilot.' : state.score < 15 ? 'Great effort. The dog remains unimpressed.' : 'Legendary flight. Mandatory bonk anyway.';
+  $('result-title').innerHTML = cake
+    ? newBest ? 'New record.<br><span>Extra frosting.</span>' : 'Crash landing.<br><span>Cake pending.</span>'
+    : newBest ? 'New record.<br><span>Still bonked.</span>' : 'Bad flight.<br><span>Dog fight.</span>';
+  $('result-message').textContent = cake
+    ? state.score === 0 ? 'That was a piece of cake. To the face.' : state.score < 5 ? 'Your in-flight dessert has arrived. Aggressively.' : state.score < 15 ? 'Good flight. Terrible day for those glasses.' : 'A legendary pilot. A fully frosted legend.'
+    : state.score === 0 ? 'Your flight instructor is deeply disappointed.' : state.score < 5 ? 'The Shih Tzu would like to speak to the pilot.' : state.score < 15 ? 'Great effort. The dog remains unimpressed.' : 'Legendary flight. Mandatory bonk anyway.';
   $('copy-button').innerHTML = '<svg><use href="#i-copy"/></svg> Copy my score';
   showScreen('over');
-  announce(`Flight over. You cleared ${state.score} ${state.score === 1 ? 'pipe' : 'pipes'}. ${newBest ? 'New personal best! ' : ''}A Shih Tzu bonks Rowan. Press Space to fly again.`);
+  if (cake) sound.playDefeat();
+  if (newBest) sound.chime(true);
+  announce(`Flight over. ${currentPilot().name} cleared ${state.score} ${state.score === 1 ? 'pipe' : 'pipes'}. ${newBest ? 'New personal best! ' : ''}${cake ? 'Cake smashes into Captain Specs.' : 'A Shih Tzu bonks Rowan.'} Press Space to fly again.`);
 }
 
 // The scene is drawn in a fixed coordinate system, independent of display size.
@@ -238,7 +224,8 @@ function cloud(x, y, scale, opacity) {
 }
 function drawBackground() {
   const gradient = ctx.createLinearGradient(0, 0, 0, 548);
-  gradient.addColorStop(0, '#c2e4d9'); gradient.addColorStop(0.65, '#dcecdc'); gradient.addColorStop(1, '#e9edd7');
+  const sky = currentPilot().sky;
+  gradient.addColorStop(0, sky[0]); gradient.addColorStop(0.65, sky[1]); gradient.addColorStop(1, sky[2]);
   ctx.fillStyle = gradient; ctx.fillRect(0, 0, 420, 600);
   ctx.fillStyle = '#e9efca'; ctx.beginPath(); ctx.arc(336, 107, 33, 0, Math.PI * 2); ctx.fill();
   ctx.strokeStyle = '#8da99566'; ctx.lineWidth = 1;
@@ -296,6 +283,7 @@ function drawGround() {
 }
 function drawBird() {
   if (state.status === 'ready') return;
+  const portrait = portraits[selectedPilot];
   const { bird } = state;
   ctx.save(); ctx.translate(bird.x, bird.y); ctx.rotate(bird.rotation);
   const wingAngle = reducedMotion ? 0 : Math.sin(state.elapsed * 26) * 0.3;
@@ -323,7 +311,7 @@ function drawParticles(dt) {
 function onScore(score) {
   $('score').textContent = score;
   sound.chime(); scorePulse = 0.25;
-  if (score % 5 === 0) toast({ 5: 'FIVE PIPES. STILL ALIVE.', 10: 'DOUBLE DIGITS. WHO IS THIS GUY?', 15: 'ROWAN HAS LEFT THE GROUP CHAT.', 20: 'CERTIFIED FREQUENT FLYER.' }[score] || `${score} PIPES. ABSOLUTE LEGEND.`);
+  if (score % 5 === 0) toast({ 5: 'FIVE PIPES. STILL ALIVE.', 10: 'DOUBLE DIGITS. WHO IS THIS GUY?', 15: selectedPilot === 'specs' ? 'CAN THE CAKE EVEN CATCH HIM?' : 'ROWAN HAS LEFT THE GROUP CHAT.', 20: 'CERTIFIED FREQUENT FLYER.' }[score] || `${score} PIPES. ABSOLUTE LEGEND.`);
   if (!reducedMotion) for (let i = 0; i < 10; i++) particles.push({ x: state.bird.x + 14, y: state.bird.y, vx: (Math.random() - 0.4) * 130, vy: (Math.random() - 0.5) * 140, age: 0, life: 0.5, color: ['#fff8df', '#f2745b', '#9bafd0'][i % 3], size: 2 + Math.random() * 2 });
 }
 function render(now) {
@@ -355,6 +343,21 @@ $('sound-button').addEventListener('click', () => {
   sound.unlock(); sound.toggle();
   if (state.status === 'playing' && !paused) canvas.focus({ preventScroll: true });
 });
+$('voice-preview').addEventListener('click', () => {
+  sound.unlock();
+  if (sound.muted) { toast('Sound is muted. Use the speaker button to unmute.'); return; }
+  sound.playFlap();
+});
+document.querySelectorAll('.pilot-button').forEach((button) => button.addEventListener('click', () => {
+  if (state.status === 'playing') return;
+  selectedPilot = button.dataset.pilot;
+  storage.set('rowan-pilot', selectedPilot);
+  reset(state, selectedMode); particles = []; paused = false;
+  $('score').textContent = '0';
+  $('game-toast').classList.remove('show'); clearTimeout(toastTimeout);
+  updatePilot(); showScreen('ready');
+  announce(`${currentPilot().name} selected. ${currentPilot().defeat === 'cake' ? 'Cake class is now boarding.' : 'The original pilot is back.'}`);
+}));
 canvas.addEventListener('pointerdown', (event) => {
   if (event.button !== 0) return;
   event.preventDefault(); canvas.focus({ preventScroll: true }); flapInput();
@@ -362,6 +365,7 @@ canvas.addEventListener('pointerdown', (event) => {
 document.querySelectorAll('.mode-button').forEach((button) => button.addEventListener('click', () => {
   if (state.status === 'playing') return;
   selectedMode = button.dataset.mode; storage.set('rowan-mode', selectedMode);
+  sound.silence();
   reset(state, selectedMode); $('score').textContent = '0'; particles = [];
   showScreen('ready');
   announce(`${MODES[selectedMode].label} mode selected.`);
@@ -401,7 +405,8 @@ $('help-dialog').addEventListener('close', () => {
   helpPausedFlight = false;
 });
 $('copy-button').addEventListener('click', async () => {
-  const scoreText = `I cleared ${state.score} ${state.score === 1 ? 'pipe' : 'pipes'} on Flappy Rowan (${MODES[selectedMode].label}) and got bonked by a Shih Tzu. Your turn! ${location.href.split('?')[0].split('#')[0]}`;
+  const consequence = currentPilot().defeat === 'cake' ? 'got a cake smashed in my face' : 'got bonked by a Shih Tzu';
+  const scoreText = `I cleared ${state.score} ${state.score === 1 ? 'pipe' : 'pipes'} as ${currentPilot().name} on Flappy Rowan (${MODES[selectedMode].label}) and ${consequence}. Your turn! ${location.href.split('?')[0].split('#')[0]}`;
   try {
     await navigator.clipboard.writeText(scoreText);
     $('copy-button').innerHTML = '<svg><use href="#i-copy"/></svg> Score copied!';
@@ -422,4 +427,4 @@ document.addEventListener('fullscreenchange', () => {
   $('fullscreen-button').setAttribute('aria-label', document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen');
   fitCanvas();
 });
-updateSoundButton(); showScreen('ready'); fitCanvas(); requestAnimationFrame(render);
+updateSoundButton(); updatePilot(); showScreen('ready'); fitCanvas(); requestAnimationFrame(render);

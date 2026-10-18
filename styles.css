@@ -45,4 +45,56 @@
 @keyframes dog-bounce{0%,35%,75%,100%{transform:translateY(0)}45%,58%{transform:translateY(-3px)}}
 @media(min-width:1500px){.result-overlay h2{font-size:42px}.bonk-scene{height:127px}.bonk-dog{width:116px;height:124px}.result-overlay p{font-size:11px}.result-overlay .result-scores strong{font-size:42px}.result-overlay .primary-button{padding:13px 17px;font-size:14px}}
 @media(max-width:380px){.bonk-scene{height:88px;width:181px}.bonk-dog{width:88px;height:94px;left:8px}.bonk-rowan{width:46px;height:52px;right:18px}.bonk-paw{left:69px;top:43px;width:51px}.bonk-impact{font-size:10px}.bonk-stars{top:28px;font-size:14px}.result-overlay h2{font-size:31px}.result-overlay .result-stamp{font-size:5.5px}.result-overlay p{font-size:8px}.result-overlay .result-scores{margin-bottom:11px}.result-overlay .result-scores strong{font-size:30px}.result-overlay .copy-button{padding-top:11px}.result-overlay .tap-hint{margin-top:10px}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.bonk-impact,.bonk-stars{opacity:1}.bonk-paw{transform:rotate(13deg)}}
+.pilot-picker{border:0;padding:0;margin:22px 0 0;min-width:0;max-width:365px}
+.pilot-picker legend{font-size:8px;font-weight:700;letter-spacing:1.4px;color:#777a6f}
+.pilot-options{display:flex;gap:8px;margin-top:10px}
+.pilot-button{position:relative;display:flex;align-items:center;gap:9px;flex:1;min-width:0;padding:8px 10px 8px 7px;background:#fcfbf6;border:1px solid #c9cbc0;border-radius:9px;text-align:left;transition:background .15s,transform .15s,border-color .15s}
+.pilot-button>img{display:block;width:34px;height:37px;border:1px solid #747e6b;border-radius:9px;object-fit:cover;flex-shrink:0}
+.pilot-button>span:not(.pilot-check){display:flex;flex-direction:column;gap:4px}
+.pilot-button strong{font-family:var(--display);font-size:12px;font-weight:700;white-space:nowrap;letter-spacing:-.4px}
+.pilot-button small{font-size:5.5px;letter-spacing:.8px;white-space:nowrap;color:#787e70}
+.pilot-check{font-size:11px;font-weight:700;margin-left:auto;opacity:0}
+.pilot-button.is-selected{border:1.5px solid var(--ink);background:#e6ecda;padding:7.5px 9.5px 7.5px 6.5px;box-shadow:0 2px 0 var(--ink)}
+.pilot-button[data-pilot="specs"].is-selected{background:#e4dcec}
+.pilot-button.is-selected .pilot-check{opacity:1}
+.pilot-button:hover:not(:disabled){transform:translateY(-1px)}
+.pilot-button:disabled:not(.is-selected){opacity:.45}
+.pilot-footnote{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px}
+.pilot-footnote>span{font-size:6px;letter-spacing:.7px;color:var(--muted);font-weight:600}
+.voice-preview{display:flex;align-items:center;gap:4px;font-size:8px;padding:3px 0 3px 4px;border:0;background:none;white-space:nowrap}
+.voice-preview svg{width:12px;height:12px;stroke-width:1.5}
+.voice-preview:hover:not(:disabled){color:#c35b45}.voice-preview:disabled{opacity:.4}
+.pilot-picker+.mode-picker{margin-top:20px}
+body[data-pilot="specs"] .ready-overlay h2>span{color:#76628b}
+body[data-pilot="specs"] .result-overlay{background:#f2e9f0ef}
+body[data-pilot="specs"] .result-stamp:not(.is-record){background:#e9d9ec;border-color:#ac8eae}
+body[data-pilot="specs"] .game-frame{background:#ded4ed;box-shadow:7px 7px 0 #dcd5df}
+body[data-pilot="specs"] .handwritten{color:#9b7d99}
+.cake-scene{position:relative;width:210px;height:109px;flex-shrink:0;margin:3px auto 0;isolation:isolate}
+.cake-victim{position:absolute;left:112px;top:29px;width:62px;height:72px;border:2px solid var(--ink);border-radius:18px;object-fit:cover;transform-origin:50% 95%;animation:cake-recoil 2.8s ease-in-out infinite;z-index:1}
+.flying-cake{position:absolute;left:3px;top:20px;width:100px;height:80px;z-index:4;transform-origin:50% 65%;animation:cake-delivery 2.8s ease-in-out infinite}
+.frosting-splat{position:absolute;z-index:5;left:110px;top:42px;width:65px;height:39px;background:#fff9ec;border:1.3px solid #b97d8b;border-radius:48% 30% 40% 25%;transform-origin:center;animation:frosting-arrival 2.8s ease-in-out infinite;box-shadow:inset 0 -5px 0 #f6bbca}
+.frosting-splat::before,.frosting-splat::after{content:'';position:absolute;background:#fff9ec;border:1.1px solid #b97d8b;border-radius:50%;z-index:-1}
+.frosting-splat::before{width:24px;height:22px;left:-11px;top:4px}.frosting-splat::after{width:22px;height:19px;right:-8px;top:-4px}
+.frosting-drip{position:absolute;display:block;top:29px;width:11px;border:1px solid #b97d8b;border-top:0;border-radius:0 0 8px 8px;background:#fff9ec}.drip-one{height:23px;left:9px}.drip-two{height:14px;right:9px;background:#f6bbca}
+.frosting-cherry{position:absolute;width:13px;height:13px;left:28px;top:-15px;background:#e0695b;border:1.3px solid var(--ink);border-radius:50%}.frosting-cherry::before{content:'';position:absolute;left:6px;top:-8px;width:6px;height:9px;border-left:1.5px solid var(--ink);border-radius:100% 0 0 0;transform:rotate(15deg)}
+.frosting-splat i{position:absolute;width:8px;height:3px;background:#d6819b;transform:rotate(-25deg);left:11px;top:9px;border-radius:2px}.frosting-splat i:nth-last-child(3){left:37px;top:7px;background:#9a96bf;transform:rotate(25deg)}.frosting-splat i:nth-last-child(2){left:46px;top:24px;background:#ddad60;transform:rotate(-45deg)}.frosting-splat i:nth-last-child(1){left:24px;top:25px;background:#96b88b;transform:rotate(60deg)}
+.cake-impact{position:absolute;z-index:6;right:1px;top:3px;background:#f4c56e;border:1.2px solid var(--ink);font:700 15px var(--display);letter-spacing:-1px;padding:3px 7px;transform:rotate(10deg);animation:cake-impact 2.8s ease-in-out infinite}
+.cake-confetti{position:absolute;z-index:5;left:36px;top:4px;color:#b17c9b;font-size:18px;letter-spacing:5px;animation:cake-impact 2.8s ease-in-out infinite}.cake-confetti span{font-size:12px;color:#c99b49}
+.cream-crumb{position:absolute;z-index:6;left:127px;top:55px;width:12px;height:8px;border-radius:50%;background:#fff9ec;border:1px solid #b97d8b;animation:cream-flight 2.8s ease-out infinite;--crumb-x:-40px;--crumb-y:-34px}.crumb-two{--crumb-x:63px;--crumb-y:-21px;width:8px;height:10px;background:#f6bbca}.crumb-three{--crumb-x:-31px;--crumb-y:49px;width:8px;height:7px}
+@keyframes cake-delivery{0%,8%{transform:translate(-42px,8px) rotate(-24deg);opacity:0}13%{opacity:1}30%{transform:translate(79px,-1px) rotate(13deg);opacity:1}35%{transform:translate(89px,2px) rotate(19deg);opacity:0}85%,100%{transform:translate(89px,2px) rotate(19deg);opacity:0}}
+@keyframes cake-recoil{0%,27%,87%,100%{transform:rotate(-3deg)}34%,41%{transform:translate(7px,4px) rotate(13deg)}54%,80%{transform:rotate(4deg)}}
+@keyframes frosting-arrival{0%,28%{transform:scale(.15);opacity:0}34%{transform:scale(1.14);opacity:1}42%,82%{transform:scale(1);opacity:1}89%,100%{transform:scale(.9);opacity:0}}
+@keyframes cake-impact{0%,29%,87%,100%{opacity:0}34%,80%{opacity:1}}
+@keyframes cream-flight{0%,29%{opacity:0;transform:translate(0,0) scale(.6)}34%{opacity:1}56%{opacity:1;transform:translate(var(--crumb-x),var(--crumb-y)) scale(1)}70%,100%{opacity:0;transform:translate(var(--crumb-x),calc(var(--crumb-y) + 12px)) scale(.7)}}
+@media(min-width:1000px) and (max-height:800px){h1{font-size:64px;margin:20px 0 17px}.title-spark{left:272px;top:74px;width:38px;height:38px}.intro-copy{font-size:16px;line-height:1.5;margin-bottom:0}.pilot-picker{margin-top:18px}.pilot-picker+.mode-picker{margin-top:18px;margin-bottom:15px}.record-card{padding:11px 0}.desktop-controls{margin-top:15px}.main-layout{padding-top:12px}.site-footer{margin-top:3px}}
+@media(max-width:999px){.pilot-button{gap:6px;padding-left:6px;padding-right:7px}.pilot-button.is-selected{padding-left:5.5px;padding-right:6.5px}.pilot-button strong{font-size:10px}.pilot-button small{font-size:5px;letter-spacing:.5px}.pilot-button>img{width:29px;height:33px}.pilot-footnote>span{font-size:5.5px;letter-spacing:.35px}.pilot-check{font-size:9px}}
+@media(max-width:720px){.pilot-picker{width:100%;max-width:none;margin-top:21px}.pilot-picker legend{font-size:7px;letter-spacing:1px}.pilot-options{margin-top:9px;gap:7px}.pilot-button{padding:7px 9px 7px 7px;gap:8px}.pilot-button.is-selected{padding:6.5px 8.5px 6.5px 6.5px}.pilot-button strong{font-size:11px}.pilot-button>img{width:31px;height:35px}.pilot-button small{font-size:5px;letter-spacing:.6px}.pilot-footnote{margin-top:7px}.pilot-footnote>span{font-size:5.5px}.voice-preview{font-size:7px}.pilot-picker+.mode-picker{margin-top:17px}.cake-scene{height:109px}}
+@media(max-width:380px){.pilot-button{gap:6px;padding-right:6px}.pilot-button.is-selected{padding-right:5.5px}.pilot-button strong{font-size:9px}.pilot-button>img{width:28px;height:31px}.pilot-button small{font-size:4.5px;letter-spacing:.35px}.pilot-footnote>span{font-size:4.7px}.cake-scene{height:88px;width:190px}.cake-victim{left:105px;top:22px;width:54px;height:62px}.flying-cake{width:90px;height:72px;top:14px}.frosting-splat{left:104px;top:34px;width:56px;height:34px}.frosting-splat i:nth-last-child(2){left:40px;top:22px}.frosting-drip{top:27px}.drip-one{height:17px}.cake-impact{font-size:12px;right:0}.cake-confetti{font-size:14px}.cream-crumb{left:119px;top:44px}}
+.cake-victim{animation:cake-recoil 1.05s ease-in-out both}.flying-cake{animation:cake-delivery 1.05s ease-in-out both}.frosting-splat{animation:frosting-arrival 1.05s ease-in-out both}.cake-impact,.cake-confetti{animation:cake-impact 1.05s ease-in-out both}.cream-crumb{animation:cream-flight 1.4s ease-out both}
+@keyframes cake-delivery{0%{transform:translate(-42px,8px) rotate(-24deg);opacity:0}15%{opacity:1}59%{transform:translate(79px,-1px) rotate(13deg);opacity:1}68%{transform:translate(89px,2px) rotate(19deg)}100%{transform:translate(42px,28px) rotate(25deg) scale(.65);opacity:1}}
+@keyframes cake-recoil{0%,55%{transform:rotate(-3deg)}65%,73%{transform:translate(7px,4px) rotate(13deg)}100%{transform:rotate(4deg)}}
+@keyframes frosting-arrival{0%,58%{transform:scale(.15);opacity:0}67%{transform:scale(1.14);opacity:1}85%,100%{transform:scale(1);opacity:1}}
+@keyframes cake-impact{0%,59%{opacity:0}67%,100%{opacity:1}}
+@keyframes cream-flight{0%,44%{opacity:0;transform:translate(0,0) scale(.6)}51%{opacity:1}77%{opacity:1;transform:translate(var(--crumb-x),var(--crumb-y)) scale(1)}100%{opacity:0;transform:translate(var(--crumb-x),calc(var(--crumb-y) + 12px)) scale(.7)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.bonk-impact,.bonk-stars{opacity:1}.bonk-paw{transform:rotate(13deg)}.flying-cake{transform:translate(-6px,3px) rotate(-13deg);opacity:1}.frosting-splat,.cake-impact,.cake-confetti{opacity:1}.cream-crumb{display:none}}

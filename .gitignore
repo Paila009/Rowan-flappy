@@ -1,5 +1,6 @@
 # Local dependencies and preview tools
 node_modules/
+.tools/
 .venv/
 venv/
 __pycache__/

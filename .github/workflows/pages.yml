@@ -8,6 +8,7 @@ on:
       - styles.css
       - game.js
       - engine.mjs
+      - audio.mjs
       - assets/**
       - .github/workflows/pages.yml
   workflow_dispatch:
@@ -38,12 +39,13 @@ jobs:
         run: |
           node --check game.js
           node --check engine.mjs
-          node --test tests/engine.test.mjs
+          node --check audio.mjs
+          node --test tests/*.test.mjs
 
       - name: Package the game
         run: |
           mkdir -p _site
-          cp index.html styles.css game.js engine.mjs _site/
+          cp index.html styles.css game.js engine.mjs audio.mjs _site/
           cp -R assets _site/assets
           touch _site/.nojekyll
 

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 120" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">A very throwable celebration cake</title>
+  <desc id="desc">A tilted cream and pink layer cake with dripping frosting, colorful sprinkles, and a cherry on top.</desc>
+  <g transform="rotate(-7 75 69)" stroke="#242822" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- A generous plate catches the wobbly layers. -->
+    <ellipse cx="75" cy="99" rx="61" ry="11" fill="#fffaf0"/>
+    <path d="M25 99c17 9 84 10 101 0" stroke="#b48a61" stroke-width="2.5"/>
+    <!-- The cake is tall enough to make a wonderfully silly splat. -->
+    <path d="M29 52h92v39c-6 13-85 13-92 0Z" fill="#fffaf0"/>
+    <path d="M30 70c25 9 66 9 90 0v12c-24 9-66 9-90 0Z" fill="#f2745b"/>
+    <path d="M30 88c27 9 64 9 90 0" stroke="#b48a61" stroke-width="3"/>
+    <!-- Thick pink icing, with three rounded drips. -->
+    <path d="M28 49c5-12 88-12 94 0v10c0 7-8 8-10 1l-1-3-9 3v10c0 8-10 9-11 0l-1-7-21 1-1 5c-1 9-11 8-11 0v-7l-13-2-1 4c-2 8-12 5-12-2l-3-3Z" fill="#f6b3b6"/>
+    <ellipse cx="75" cy="48" rx="47" ry="13" fill="#f6b3b6"/>
+    <!-- A small swirled nest of cream supports the cherry. -->
+    <path d="M61 43c-7-5-2-11 4-11-1-5 4-8 9-6 4-5 9-2 9 3 7 0 10 6 7 10 7 6-20 12-29 4Z" fill="#fffaf0" stroke-width="3"/>
+    <path d="M67 36c6 4 13 3 17-1" stroke="#b48a61" stroke-width="2"/>
+    <circle cx="80" cy="22" r="9" fill="#f2745b" stroke-width="3"/>
+    <path d="M80 13c1-7 6-11 11-10" stroke-width="3"/>
+    <path d="m76 19 2-2" stroke="#fffaf0" stroke-width="2.5"/>
+    <!-- A few big sprinkles remain readable at game scale. -->
+    <path d="m40 45 6 3m53-5 5-2m-53 9 4-1m50 2 5 2" stroke="#fffaf0" stroke-width="3"/>
+    <path d="m48 40 4-2m39 13 4 1m-29 2 5 1" stroke="#f2745b" stroke-width="3"/>
+    <path d="m38 52 4-1m69-7 3 2m-23-7 3-1" stroke="#b48a61" stroke-width="2.5"/>
+  </g>
+</svg>
