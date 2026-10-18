@@ -1,0 +1,21 @@
+# Local dependencies and preview tools
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Generated deployment and browser-test output
+_site/
+playwright-report/
+test-results/
+previews/
+
+# Machine-specific files and secrets
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log

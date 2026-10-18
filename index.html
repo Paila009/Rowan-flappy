@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f3eb">
+  <meta name="description" content="One friend. A tiny pair of wings. Absolutely no flight experience. Play Flappy Rowan, a little arcade game made for a legend.">
+  <title>Flappy Rowan — Cleared for takeoff.</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <link rel="preload" href="./assets/rowan.png" as="image">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./game.js"></script>
+</head>
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="m11 5-6 4H2v6h3l6 4V5Zm4 3a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+    <symbol id="i-muted" viewBox="0 0 24 24"><path d="m11 5-6 4H2v6h3l6 4V5Zm5 4 6 6m0-6-6 6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14m8-14v14"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></symbol>
+    <symbol id="i-retry" viewBox="0 0 24 24"><path d="M4 9a8 8 0 1 1 1 9M4 3v6h6"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 3h10v6a5 5 0 0 1-10 0V3Zm0 2H3v2a4 4 0 0 0 4 4m10-6h4v2a4 4 0 0 1-4 4m-5 3v6m-5 1h10"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><path d="M9 8h11v13H9V8ZM15 8V3H4v13h5"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
+  </svg>
+
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Flappy Rowan home">
+      <span class="brand-mark">r<span>↗</span></span>
+      <span>flappy rowan<span class="brand-dot">.</span></span>
+    </a>
+    <div class="header-actions">
+      <span class="edition">THE FRIEND EDITION <span>001</span></span>
+      <button class="text-button" id="help-button" aria-haspopup="dialog"><span class="question-mark">?</span> How to play</button>
+      <button class="icon-button sound-button" id="sound-button" aria-label="Mute sound" aria-pressed="false" title="Toggle sound (M)"><svg><use href="#i-sound"/></svg></button>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <section class="intro" aria-labelledby="page-title">
+      <div class="eyebrow"><span class="status-dot"></span> ZERO EXPERIENCE. MAXIMUM CONFIDENCE.</div>
+      <h1 id="page-title">Born to fly.<br><span>Probably.</span><svg class="title-spark" viewBox="0 0 60 60" aria-hidden="true"><path d="m29 3 4 18 16-9-9 17 18 3-18 4 9 16-17-10-4 16-3-17-17 9 10-17L2 29l18-3L10 11l16 10Z"/></svg></h1>
+      <p class="intro-copy">One Rowan. Two tiny wings.<br>A deeply questionable flight plan.</p>
+      <p class="intro-detail">Tap to keep your favourite human airborne.<br>Dodge the pipes. Chase the score. Blame gravity.</p>
+
+      <fieldset class="mode-picker">
+        <legend>PICK YOUR FLIGHT</legend>
+        <div class="mode-options" role="group" aria-label="Difficulty">
+          <button type="button" class="mode-button" data-mode="chill" aria-pressed="false">Chill <span>↝</span></button>
+          <button type="button" class="mode-button is-selected" data-mode="classic" aria-pressed="true">Classic <span>↗</span></button>
+          <button type="button" class="mode-button" data-mode="chaos" aria-pressed="false">Chaos <span>ϟ</span></button>
+        </div>
+        <p id="mode-description">The original recipe. A little skill, a little luck.</p>
+      </fieldset>
+
+      <div class="record-card">
+        <span class="record-icon"><svg><use href="#i-trophy"/></svg></span>
+        <div><span class="small-label">YOUR PERSONAL BEST</span><strong><span id="personal-best">00</span> <span>pipes cleared</span></strong></div>
+        <span class="record-flourish" aria-hidden="true">✦</span>
+      </div>
+      <div class="desktop-controls"><kbd>SPACE</kbd><span>or</span><kbd>↑</kbd><span>to flap</span><span class="control-divider">/</span><kbd>P</kbd><span>to pause</span></div>
+    </section>
+
+    <section class="arcade" aria-label="Flappy Rowan arcade">
+      <div class="arcade-caption"><span><span class="status-dot"></span> ROWAN AIRLINES</span><span id="flight-status">AWAITING TAKEOFF</span></div>
+      <div class="game-frame" id="game-frame">
+        <canvas id="game-canvas" width="420" height="600" tabindex="0" role="img" aria-label="Flappy Rowan game. Press Space or Up Arrow, click, or tap to flap. Avoid pipes and the ground.">Your browser needs canvas support to play Flappy Rowan.</canvas>
+        <div class="game-hud" id="game-hud">
+          <div class="hud-score"><span>SCORE</span><strong id="score">0</strong></div>
+          <div class="hud-right"><span class="hud-best"><svg><use href="#i-trophy"/></svg><span id="hud-best">0</span></span><button class="game-icon-button" id="pause-button" aria-label="Pause game" title="Pause (P)" hidden><svg><use href="#i-pause"/></svg></button></div>
+        </div>
+
+        <div class="game-overlay ready-overlay" id="ready-overlay">
+          <div class="boarding-label">FIRST CLASS HUMAN. ECONOMY WINGS.</div>
+          <div class="portrait-flyer"><span class="portrait-wing wing-left"></span><img src="./assets/rowan.png" alt="Rowan, your fearless pilot" width="92" height="104"><span class="portrait-wing wing-right"></span><span class="portrait-star">✦</span></div>
+          <span class="ready-kicker">MEET YOUR PILOT</span>
+          <h2>Flappy<br><span>Rowan.</span></h2>
+          <p>The sky is the limit.<br>The pipes are the problem.</p>
+          <button class="primary-button" id="start-button">Let's fly <svg><use href="#i-arrow"/></svg></button>
+          <span class="tap-hint">PRESS SPACE OR TAP TO START</span>
+        </div>
+
+        <div class="game-overlay result-overlay" id="result-overlay" hidden>
+          <span class="result-stamp" id="result-stamp">A BEAUTIFUL ATTEMPT</span>
+          <div class="bonk-scene" aria-label="A fluffy Shih Tzu playfully bonks Rowan with a paw">
+            <img class="bonk-dog" src="./assets/shih-tzu.svg" alt="A very unimpressed Shih Tzu" width="104" height="111">
+            <span class="bonk-paw" aria-hidden="true"><span></span></span>
+            <img class="bonk-rowan" src="./assets/rowan.png" alt="Rowan getting a cartoon bonk" width="57" height="63">
+            <span class="bonk-impact" aria-hidden="true">BONK!</span><span class="bonk-stars" aria-hidden="true">✦ <span>✧</span> ✦</span>
+          </div>
+          <h2 id="result-title">Gravity wins.<br><span>This time.</span></h2>
+          <p id="result-message">Even legends need a practice run.</p>
+          <div class="result-scores"><div><span>THIS FLIGHT</span><strong id="final-score">0</strong></div><span class="result-score-divider"></span><div><span>PERSONAL BEST</span><strong id="final-best">0</strong></div></div>
+          <button class="primary-button" id="retry-button">One more flight <svg><use href="#i-retry"/></svg></button>
+          <button class="copy-button" id="copy-button"><svg><use href="#i-copy"/></svg> Copy my score</button>
+          <span class="tap-hint">SPACE TO TRY AGAIN</span>
+        </div>
+
+        <div class="game-overlay pause-overlay" id="pause-overlay" hidden>
+          <span class="pause-symbol" aria-hidden="true">Ⅱ</span><h2>Air break.</h2><p>Your pilot is catching his breath.</p>
+          <button class="primary-button" id="resume-button">Keep flying <svg><use href="#i-play"/></svg></button>
+          <button class="copy-button" id="restart-button"><svg><use href="#i-retry"/></svg> Restart flight</button>
+        </div>
+        <div class="game-toasts" id="game-toast" role="status"></div>
+        <div class="ground-caption" aria-hidden="true"><span>CAUTION: ACTUAL GROUND</span><span>↓</span></div>
+        <button class="fullscreen-button" id="fullscreen-button" aria-label="Enter fullscreen" title="Fullscreen"><svg><use href="#i-expand"/></svg></button>
+      </div>
+      <div class="below-game"><span>SMALL WINGS. BIG MAIN CHARACTER ENERGY.</span><span class="handwritten">you got this ↗</span></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><span>A little game for a big legend.</span><span>BUILT ON FRIENDSHIP & QUESTIONABLE PHYSICS <span class="footer-heart">♡</span></span></footer>
+  <p class="screen-reader-only" id="announcement" role="status" aria-live="polite"></p>
+
+  <dialog id="help-dialog" aria-labelledby="help-title">
+    <button class="icon-button dialog-close" id="close-help" aria-label="Close instructions"><svg><use href="#i-close"/></svg></button>
+    <span class="eyebrow">YOUR PRE-FLIGHT BRIEFING</span><h2 id="help-title">A very short<br>flight school.</h2>
+    <ol class="instructions"><li><span>01</span><div><strong>Give Rowan a lift.</strong><p>Tap the game, click, or press Space / ↑. Every flap plays Rowan's voice.</p></div></li><li><span>02</span><div><strong>Mind the gap.</strong><p>Fly between the pipes. Each pair you pass earns one point. The ground and ceiling are off limits.</p></div></li><li><span>03</span><div><strong>Run it back.</strong><p>Choose Chill, Classic, or Chaos before a flight. Your best score is saved separately for each mode on this device.</p></div></li></ol>
+    <div class="help-shortcuts"><span><kbd>P</kbd> / <kbd>ESC</kbd> pause</span><span><kbd>M</kbd> sound</span><span><kbd>R</kbd> restart</span></div>
+    <button class="primary-button" id="got-it-button">Cleared for takeoff <svg><use href="#i-arrow"/></svg></button>
+  </dialog>
+  <noscript><p class="noscript-message">Please enable JavaScript to get Rowan off the ground.</p></noscript>
+</body>
+</html>

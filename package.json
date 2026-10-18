@@ -1,0 +1,12 @@
+{
+  "name": "flappy-rowan",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A little arcade game for a big legend.",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "start": "node scripts/serve.mjs",
+    "test": "node --test tests/*.test.mjs"
+  }
+}
