@@ -9,6 +9,8 @@ on:
       - game.js
       - engine.mjs
       - audio.mjs
+      - fullscreen.mjs
+      - fullscreen.css
       - assets/**
       - .github/workflows/pages.yml
   workflow_dispatch:
@@ -40,12 +42,13 @@ jobs:
           node --check game.js
           node --check engine.mjs
           node --check audio.mjs
+          node --check fullscreen.mjs
           node --test tests/*.test.mjs
 
       - name: Package the game
         run: |
           mkdir -p _site
-          cp index.html styles.css game.js engine.mjs audio.mjs _site/
+          cp index.html styles.css fullscreen.css game.js engine.mjs audio.mjs fullscreen.mjs _site/
           cp -R assets _site/assets
           touch _site/.nojekyll
 

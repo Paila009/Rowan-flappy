@@ -1,6 +1,6 @@
 # Rowan Flappy
 
-A personal Flappy Bird style browser game starring Rowan, Captain Specs, Jaado from Meesho, and 2 bha dono tabahii, using the supplied original portraits and voice clips. Built with HTML, CSS, JavaScript, and Canvas, with no package install or build step required.
+A personal Flappy Bird style browser game starring Rowan, Captain Specs, Jaado from Meesho, 2 bha dono tabahii, and bokuandagadu, using the supplied original portraits and voice clips. Built with HTML, CSS, JavaScript, and Canvas, with no package install or build step required.
 
 ## Run locally
 
@@ -12,9 +12,11 @@ node scripts/serve.mjs
 
 Open [localhost:8080](http://localhost:8080/). Follow the game's on-screen controls to start, flap, pause, and play again. Browsers require a user interaction before audio can play.
 
-Choose one of four pilots and a difficulty before starting. Tap, click, Space, or Up Arrow to flap. P / Escape pauses, M toggles sound, and R restarts. Rowan uses his original voice clip and gets a cartoon Shih Tzu paw bonk after a defeat. Captain Specs alternates between two supplied voice clips on flaps and gets a special cake smash when a flight ends. Jaado from Meesho uses his supplied original portrait and voice, with a cartoon empty-wallet defeat showing a -30K money loss. 2 bha dono tabahii uses his supplied original portrait and voice, with a cartoon dumbbell bonk after a defeat.
+Choose one of five pilots and a difficulty before starting. Tap, click, Space, or Up Arrow to flap. P / Escape pauses, M toggles sound, and R restarts. Rowan uses his original voice clip and gets a cartoon Shih Tzu paw bonk after a defeat. Captain Specs alternates between two supplied voice clips on flaps and gets a special cake smash when a flight ends. Jaado from Meesho uses his supplied original portrait and voice, with a cartoon empty-wallet defeat showing a -30K money loss. 2 bha dono tabahii uses his supplied original portrait and voice, with a cartoon dumbbell bonk after a defeat. bokuandagadu uses his supplied original portrait and voice, with both a Jim Jam biscuit and a Santoor soap cartoon bonk after a defeat.
 
-Best scores are stored separately for each of the four pilots and every difficulty on the current device. All previous pilot voices and scores are preserved, including legacy Rowan records. Leaving the tab automatically pauses a flight.
+Best scores are stored separately for each of the five pilots and every difficulty on the current device. All previous pilot voices and scores are preserved, including legacy Rowan records. Leaving the tab automatically pauses a flight.
+
+Fullscreen keeps the entire portrait game, controls, and defeat scenes in proportion in portrait or landscape, with space for device safe areas. Browsers without native fullscreen use an immersive view within the browser. The visible Exit control or Escape returns to the page and restores its scroll position.
 
 Run the simulation and audio checks with `node --test tests/*.test.mjs`. For a 390px responsive layout preview, open `/scripts/mobile-preview.html` on the local server. The server also supports `/Rowan-flappy/` to check the GitHub Pages project path.
 
@@ -25,6 +27,7 @@ Run the simulation and audio checks with `node --test tests/*.test.mjs`. For a 3
 - `game.js`: Canvas rendering, interface, and audio behavior.
 - `engine.mjs`: game simulation, collisions, scoring, and difficulty modes.
 - `audio.mjs`: pilot voice selection and playback.
+- `fullscreen.mjs` and `fullscreen.css`: fitted native fullscreen and immersive fallback.
 - `assets/`: pilot portraits, supplied voice clips, and defeat illustrations.
 
 All website resources use relative paths so the same files work at the GitHub Pages project path `/Rowan-flappy/` and on localhost.
@@ -38,4 +41,4 @@ Review and approve the local game before pushing it to [Paila009/Rowan-flappy](h
 3. The **Deploy Rowan Flappy to GitHub Pages** workflow runs on changes to the website files. If Pages was enabled after the initial push, run the workflow manually from the **Actions** tab.
 4. After a successful deployment, the game will be available at [paila009.github.io/Rowan-flappy/](https://paila009.github.io/Rowan-flappy/).
 
-The workflow uploads only the five website files and `assets/`; documentation, tests, and local tooling are excluded from the published site. The workflow uses GitHub's built-in token, so no deployment secret is needed.
+The workflow uploads only the seven website files and `assets/`; documentation, tests, and local tooling are excluded from the published site. The workflow uses GitHub's built-in token, so no deployment secret is needed.

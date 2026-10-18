@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Jim Jam biscuit</title>
+  <desc id="desc">An original cartoon golden sandwich biscuit with a ridged edge, pale cream ring, and shiny red jam center.</desc>
+  <g stroke="#242822" stroke-linecap="round" stroke-linejoin="round">
+    <!-- The little lower lip shows the biscuit sandwich and cream filling. -->
+    <circle cx="45" cy="49" r="35" fill="#b48a61" stroke-width="3"/>
+    <path d="M12 53c9 33 56 33 66 0" stroke="#fffaf0" stroke-width="4"/>
+    <circle cx="45" cy="42" r="35" fill="#e8b653" stroke-width="3.3"/>
+    <circle cx="45" cy="42" r="29.5" stroke="#b48a61" stroke-width="4" stroke-dasharray="2 5"/>
+    <path d="M23 27c6-10 21-16 34-10" stroke="#f9d98c" stroke-width="3"/>
+    <!-- The label is pressed into the biscuit, above its cream and jam. -->
+    <text x="45" y="33" text-anchor="middle" fill="#b48a61" stroke="none" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" font-weight="700">Jim Jam</text>
+    <text x="45" y="32" text-anchor="middle" fill="#8c633c" stroke="none" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" font-weight="700">Jim Jam</text>
+    <circle cx="45" cy="52" r="18" fill="#fffaf0" stroke="#b48a61" stroke-width="2"/>
+    <circle cx="45" cy="52" r="11.5" fill="#d6534d" stroke-width="2"/>
+    <path d="M39 48c1-3 5-4 8-3" stroke="#f8b8a9" stroke-width="2.5"/>
+    <circle cx="51" cy="56" r="1.6" fill="#f2745b" stroke="none"/>
+  </g>
+</svg>

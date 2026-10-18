@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Flappy Rowan device fit checks</title>
+<style>body{margin:0;padding:14px;background:#dde2dc;color:#242822;font:13px Arial,sans-serif}nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}button{padding:8px 10px;cursor:pointer}#report{display:block;margin:10px 0;padding:10px;background:#fffdf2;border:1px solid #afbaa5;white-space:pre-wrap;font:12px/1.5 monospace}iframe{display:block;width:390px;height:844px;border:0;background:#f5f3eb;margin:auto}p{margin:8px 0 12px}</style>
+<nav><button data-size="390,844">Phone portrait</button><button data-size="844,390">Phone landscape</button><button data-size="320,568">Small phone</button><button data-size="768,1024">Tablet</button><button data-size="1280,720">Desktop</button><button id="measure">Check fit</button></nav>
+<p>Native fullscreen is blocked in this test iframe to verify the immersive fallback. Use the game's expand button, then change a size or check fit.</p>
+<output id="report">Select a pilot and enter fullscreen inside the preview.</output>
+<iframe id="device" src="/Rowan-flappy/" title="Device viewport preview" allow="fullscreen 'none'"></iframe>
+<script>
+const device = document.getElementById('device');
+function measure(){
+  const d = device.contentDocument, w = device.contentWindow;
+  if(!d || !d.getElementById('game-frame'))return;
+  const f=d.getElementById('game-frame'), h=d.getElementById('fullscreen-host'), r=f.getBoundingClientRect();
+  const inside=(e)=>{const b=e.getBoundingClientRect();return b.left>=-1&&b.top>=-1&&b.right<=w.innerWidth+1&&b.bottom<=w.innerHeight+1};
+  const active=h.classList.contains('is-fullscreen');
+  const key=d.getElementById('ready-overlay').hidden?(d.getElementById('result-overlay').hidden?'resume-button':'retry-button'):'start-button';
+  const exit=d.querySelector('.fullscreen-exit');
+  const fits=inside(f), controls=active&&inside(d.getElementById(key))&&inside(exit);
+  document.getElementById('report').textContent=JSON.stringify({viewport:[w.innerWidth,w.innerHeight],mode:h.dataset.fullscreenMode||'page',stage:[+r.width.toFixed(2),+r.height.toFixed(2)],ratio:+(r.width/r.height).toFixed(4),stageFits:fits,controlsFit:controls,exitVisible:!!exit&&!exit.hidden,active});
+}
+document.querySelectorAll('[data-size]').forEach(b=>b.onclick=()=>{const [width,height]=b.dataset.size.split(',').map(Number);device.style.width=width+'px';device.style.height=height+'px';setTimeout(measure,150)});
+document.getElementById('measure').onclick=measure;device.onload=()=>setTimeout(measure,200);
+</script></html>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 115 75" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Santoor soap</title>
+  <desc id="desc">An original cartoon saffron orange soap bar with an embossed Santoor label and tiny clean sparkles.</desc>
+  <g stroke="#242822" stroke-linecap="round" stroke-linejoin="round">
+    <g transform="rotate(-8 57.5 38)">
+      <!-- A darker lower edge gives the rounded bar a little thickness. -->
+      <rect x="14" y="20" width="87" height="45" rx="19" fill="#da8d41" stroke-width="3.3"/>
+      <rect x="14" y="13" width="87" height="46" rx="19" fill="#f2b44d" stroke-width="3.3"/>
+      <path d="M23 32c2-10 11-13 21-13h29" stroke="#ffe0a0" stroke-width="3"/>
+      <path d="M26 44c12 10 49 12 63 0" stroke="#dc9244" stroke-width="2"/>
+      <!-- An understated inset and offset lettering suggest an embossed name. -->
+      <rect x="22" y="23" width="71" height="26" rx="13" stroke="#dc9244" stroke-width="1.5"/>
+      <text x="57.5" y="43" text-anchor="middle" fill="#ffe0a0" stroke="none" font-family="Georgia, 'Times New Roman', serif" font-size="18" font-style="italic" font-weight="700">Santoor</text>
+      <text x="57.5" y="41.5" text-anchor="middle" fill="#9d5f2f" stroke="none" font-family="Georgia, 'Times New Roman', serif" font-size="18" font-style="italic" font-weight="700">Santoor</text>
+    </g>
+    <!-- Small cream sparkles keep the prop playful at game scale. -->
+    <path d="m101 4 2 6 6 2-6 2-2 6-2-6-6-2 6-2Z" fill="#fffaf0" stroke-width="2"/>
+    <path d="m9 48 1.5 4.5L15 54l-4.5 1.5L9 60l-1.5-4.5L3 54l4.5-1.5Z" fill="#fffaf0" stroke-width="2"/>
+    <circle cx="104" cy="59" r="2" fill="#fffaf0" stroke-width="1.5"/>
+  </g>
+</svg>

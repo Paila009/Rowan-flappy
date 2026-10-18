@@ -1,0 +1,67 @@
+/* Keep normal page flow unchanged; scale the whole portrait game in fullscreen. */
+.fullscreen-host { width: 100%; min-width: 0; }
+#fullscreen-host.is-fullscreen {
+  position: fixed !important;
+  inset: auto !important;
+  left: var(--fullscreen-left, 0px) !important;
+  top: var(--fullscreen-top, 0px) !important;
+  width: var(--fullscreen-width, 100vw) !important;
+  height: var(--fullscreen-height, 100dvh) !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+  border: 0;
+  background: #202a24;
+  z-index: 2147483000;
+  isolation: isolate;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+#fullscreen-host::backdrop { background: #202a24; }
+#fullscreen-host.is-fullscreen #game-frame {
+  position: absolute;
+  left: var(--fullscreen-stage-x, 50%);
+  top: var(--fullscreen-stage-y, 50%);
+  width: 420px !important;
+  height: 600px !important;
+  min-width: 420px !important;
+  max-width: none !important;
+  max-height: none !important;
+  aspect-ratio: 420 / 600 !important;
+  margin: 0 !important;
+  transform: translate(-50%, -50%) scale(var(--fullscreen-scale, 1));
+  transform-origin: center;
+  border-radius: 18px !important;
+  box-shadow: none !important;
+  transition: none;
+}
+.fullscreen-exit { display: none; }
+#fullscreen-host.is-fullscreen > .fullscreen-exit {
+  display: inline-flex;
+  position: absolute;
+  z-index: 20;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  align-items: center;
+  justify-content: center;
+  min-width: 66px;
+  min-height: 44px;
+  padding: 9px 13px;
+  border: 1px solid #f5f3eb66;
+  border-radius: 24px;
+  background: #202a24e8;
+  color: #fff9e9;
+  font: 600 13px/1.2 var(--body, sans-serif);
+  letter-spacing: .2px;
+  touch-action: manipulation;
+}
+#fullscreen-host.is-fullscreen > .fullscreen-exit:focus-visible { outline: 3px solid #f7c968; outline-offset: 3px; }
+@media (orientation: portrait) {
+  /* Tablet portrait ratios can otherwise put the exit control over the pause HUD. */
+  #fullscreen-host.is-fullscreen { padding-top: max(62px, calc(env(safe-area-inset-top) + 54px)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #fullscreen-host.is-fullscreen, #fullscreen-host.is-fullscreen #game-frame { transition: none; }
+}

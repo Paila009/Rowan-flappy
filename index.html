@@ -4,14 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f5f3eb">
-  <meta name="description" content="Four pilots. Tiny wings. Absolutely no flight experience. Choose Rowan, Captain Specs, Jaado from Meesho, or 2 bha dono tabahii and fly into some deeply questionable consequences.">
+  <meta name="description" content="Five pilots. Tiny wings. Absolutely no flight experience. Choose your friend, dodge the pipes, and fly into some deeply questionable consequences.">
   <title>Flappy Rowan — Cleared for takeoff.</title>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="preload" href="./assets/rowan.png" as="image">
   <link rel="preload" href="./assets/captain-specs.png" as="image">
   <link rel="preload" href="./assets/jaado.png" as="image">
   <link rel="preload" href="./assets/tabahii.png" as="image">
+  <link rel="preload" href="./assets/bokuandagadu.png" as="image">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./fullscreen.css">
   <script type="module" src="./game.js"></script>
 </head>
 <body>
@@ -34,7 +36,7 @@
       <span>flappy rowan<span class="brand-dot">.</span></span>
     </a>
     <div class="header-actions">
-      <span class="edition">THE FRIEND EDITION <span>004</span></span>
+      <span class="edition">THE FRIEND EDITION <span>005</span></span>
       <button class="text-button" id="help-button" aria-haspopup="dialog"><span class="question-mark">?</span> How to play</button>
       <button class="icon-button sound-button" id="sound-button" aria-label="Mute sound" aria-pressed="false" title="Toggle sound (M)"><svg><use href="#i-sound"/></svg></button>
     </div>
@@ -44,7 +46,7 @@
     <section class="intro" aria-labelledby="page-title">
       <div class="eyebrow"><span class="status-dot"></span> ZERO EXPERIENCE. MAXIMUM CONFIDENCE.</div>
       <h1 id="page-title">Born to fly.<br><span>Probably.</span><svg class="title-spark" viewBox="0 0 60 60" aria-hidden="true"><path d="m29 3 4 18 16-9-9 17 18 3-18 4 9 16-17-10-4 16-3-17-17 9 10-17L2 29l18-3L10 11l16 10Z"/></svg></h1>
-      <p class="intro-copy" id="pilot-intro">Four pilots. Tiny wings.<br>Pick your favourite flight risk.</p>
+      <p class="intro-copy" id="pilot-intro">Five pilots. Tiny wings.<br>Pick your favourite flight risk.</p>
 
       <fieldset class="pilot-picker">
         <legend>CHOOSE YOUR MAIN CHARACTER</legend>
@@ -53,6 +55,7 @@
           <button class="pilot-button" data-pilot="specs" aria-pressed="false"><img src="./assets/captain-specs.png" alt="" width="39" height="42"><span><strong>Captain Specs</strong><small>THE CAKE MAGNET</small></span><span class="pilot-check" aria-hidden="true">✓</span></button>
           <button class="pilot-button" data-pilot="jaado" aria-pressed="false"><img src="./assets/jaado.png" alt="" width="39" height="42"><span><strong>Jaado from Meesho</strong><small>THE −30K CLUB</small></span><span class="pilot-check" aria-hidden="true">✓</span></button>
           <button class="pilot-button" data-pilot="tabahii" aria-pressed="false"><img src="./assets/tabahii.png" alt="" width="39" height="42"><span><strong>2 bha dono tabahii</strong><small>DOUBLE TROUBLE</small></span><span class="pilot-check" aria-hidden="true">✓</span></button>
+          <button class="pilot-button" data-pilot="bokuandagadu" aria-pressed="false"><img src="./assets/bokuandagadu.png" alt="" width="39" height="42"><span><strong>bokuandagadu</strong><small>THE COMBO MAGNET</small></span><span class="pilot-check" aria-hidden="true">✓</span></button>
         </div>
         <div class="pilot-footnote"><span id="pilot-personality">ONE VOICE. ONE VERY JUDGY DOG.</span><button id="voice-preview" class="voice-preview" aria-label="Preview Rowan's voice"><svg><use href="#i-sound"/></svg> Mic check</button></div>
       </fieldset>
@@ -77,6 +80,7 @@
 
     <section class="arcade" aria-label="Flappy Rowan arcade">
       <div class="arcade-caption"><span><span class="status-dot"></span> <span id="airline-name">ROWAN AIRLINES</span></span><span id="flight-status">AWAITING TAKEOFF</span></div>
+      <div class="fullscreen-host" id="fullscreen-host">
       <div class="game-frame" id="game-frame">
         <canvas id="game-canvas" width="420" height="600" tabindex="0" role="img" aria-label="Flappy Rowan game. Press Space or Up Arrow, click, or tap to flap. Avoid pipes and the ground.">Your browser needs canvas support to play Flappy Rowan.</canvas>
         <div class="game-hud" id="game-hud">
@@ -125,6 +129,11 @@
             <span class="impact-ray ray-one" aria-hidden="true"></span><span class="impact-ray ray-two" aria-hidden="true"></span><span class="impact-ray ray-three" aria-hidden="true"></span>
             <span class="gym-caption" aria-hidden="true">SPOTTER HAS LEFT THE CHAT.</span>
           </div>
+          <div class="snack-soap-scene" id="snack-soap-scene" aria-label="A Jim Jam biscuit and Santoor soap fly in from both sides and cartoon-bonk bokuandagadu" hidden>
+            <img class="combo-victim" src="./assets/bokuandagadu.png" alt="bokuandagadu, about to receive the snack and soap combo" width="62" height="76">
+            <img class="thrown-biscuit" src="./assets/jimjam-biscuit.svg" alt="A flying Jim Jam biscuit" width="58" height="58">
+            <img class="thrown-soap" src="./assets/santoor-soap.svg" alt="A flying Santoor soap bar" width="75" height="49">
+          </div>
           <h2 id="result-title">Gravity wins.<br><span>This time.</span></h2>
           <p id="result-message">Even legends need a practice run.</p>
           <div class="result-scores"><div><span>THIS FLIGHT</span><strong id="final-score">0</strong></div><span class="result-score-divider"></span><div><span>PERSONAL BEST</span><strong id="final-best">0</strong></div></div>
@@ -142,6 +151,7 @@
         <div class="ground-caption" aria-hidden="true"><span>CAUTION: ACTUAL GROUND</span><span>↓</span></div>
         <button class="fullscreen-button" id="fullscreen-button" aria-label="Enter fullscreen" title="Fullscreen"><svg><use href="#i-expand"/></svg></button>
       </div>
+      </div>
       <div class="below-game"><span>SMALL WINGS. BIG MAIN CHARACTER ENERGY.</span><span class="handwritten">you got this ↗</span></div>
     </section>
   </main>
@@ -152,7 +162,7 @@
   <dialog id="help-dialog" aria-labelledby="help-title">
     <button class="icon-button dialog-close" id="close-help" aria-label="Close instructions"><svg><use href="#i-close"/></svg></button>
     <span class="eyebrow">YOUR PRE-FLIGHT BRIEFING</span><h2 id="help-title">A very short<br>flight school.</h2>
-    <ol class="instructions"><li><span>01</span><div><strong>Pick a pilot. Give them a lift.</strong><p>Choose Rowan, Captain Specs, Jaado from Meesho, or 2 bha dono tabahii. Tap, click, or press Space / ↑. Each has a voice; Specs alternates two clips.</p></div></li><li><span>02</span><div><strong>Mind the gap. And the consequences.</strong><p>Each pipe pair earns one point. Rowan gets a Shih Tzu bonk, Specs gets cake, Jaado loses −30K, and 2 bha dono tabahii gets a cartoon dumbbell bonk.</p></div></li><li><span>03</span><div><strong>Run it back.</strong><p>Choose Chill, Classic, or Chaos before a flight. Best scores are saved separately for every pilot and mode on this device.</p></div></li></ol>
+    <ol class="instructions"><li><span>01</span><div><strong>Pick a pilot. Give them a lift.</strong><p>Choose any of the five pilots. Tap, click, or press Space / ↑. Each has a voice; Captain Specs alternates two clips.</p></div></li><li><span>02</span><div><strong>Mind the gap. And the consequences.</strong><p>Clear each pipe for one point. Every pilot has a different defeat: a dog bonk, cake, −30K, a dumbbell, or bokuandagadu's Jim Jam and Santoor combo.</p></div></li><li><span>03</span><div><strong>Run it back. Anywhere.</strong><p>Pick a difficulty before flying. Bests save per pilot and mode. Use the expand button for fullscreen; rotate your device or use Exit fullscreen at any time.</p></div></li></ol>
     <div class="help-shortcuts"><span><kbd>P</kbd> / <kbd>ESC</kbd> pause</span><span><kbd>M</kbd> sound</span><span><kbd>R</kbd> restart</span></div>
     <button class="primary-button" id="got-it-button">Cleared for takeoff <svg><use href="#i-arrow"/></svg></button>
   </dialog>

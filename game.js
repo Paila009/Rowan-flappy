@@ -1,5 +1,6 @@
 import { MODES, createGame, flap, step, reset } from './engine.mjs';
 import { PilotAudio } from './audio.mjs';
+import { setupFullscreen } from './fullscreen.mjs';
 
 const PILOTS = {
   rowan: {
@@ -37,6 +38,14 @@ const PILOTS = {
     voices: [{ src: './assets/tabahii-voice.ogg', fallback: './assets/tabahii-voice.mp3' }],
     sky: ['#cbdff0', '#e3e9ed', '#e7edd9'], trail: '#b1cce6',
   },
+  bokuandagadu: {
+    name: 'bokuandagadu', portrait: './assets/bokuandagadu.png', title: 'bokuandagadu',
+    description: 'First the biscuit. Then the soap.<br>Absolutely no boring landings.',
+    boarding: 'SNACKS INCLUDED. SOAP ALSO INCLUDED.', airline: 'BOKU AIR · COMBO CLASS',
+    personality: 'ONE VOICE. TWO VERY SPECIFIC PROBLEMS.', defeat: 'snacksoap',
+    voices: [{ src: './assets/bokuandagadu-voice.ogg', fallback: './assets/bokuandagadu-voice.mp3' }],
+    sky: ['#efd7ca', '#f2e4d5', '#ecebd6'], trail: '#f0bb8d',
+  },
 };
 
 const DEFEATS = {
@@ -63,6 +72,12 @@ const DEFEATS = {
     title: 'Flight failed.<br><span>Gym called.</span>', recordTitle: 'New record.<br><span>Still bonked.</span>',
     messages: ['The landing came with complimentary weights.', 'A light flight. A very heavy consequence.', 'Nobody said this flight included leg day.', 'Big score. Bigger dumbbell. No spotter.'],
     announcement: 'A cartoon dumbbell bonks the pilot photo with stars and a BONK effect.', share: 'got bonked by a dumbbell', voice: true,
+  },
+  snacksoap: {
+    scene: 'snack-soap-scene', stamp: 'COMPLIMENTARY SNACK & SHOWER',
+    title: 'Crash course.<br><span>Snack + soap.</span>', recordTitle: 'New record.<br><span>Same combo.</span>',
+    messages: ['Jim Jam on the left. Santoor on the right.', 'A snack break. Followed by a soap break.', 'Clean flying? The soap disagrees.', 'Legendary score. Complimentary combo attack.'],
+    announcement: 'A Jim Jam biscuit and a Santoor soap bar fly in and cartoon-bonk bokuandagadu.', share: 'got bonked by a Jim Jam biscuit and Santoor soap', voice: true,
   },
 };
 
@@ -349,7 +364,7 @@ function drawParticles(dt) {
 function onScore(score) {
   $('score').textContent = score;
   sound.chime(); scorePulse = 0.25;
-  if (score % 5 === 0) toast({ 5: 'FIVE PIPES. STILL ALIVE.', 10: 'DOUBLE DIGITS. WHO IS THIS GUY?', 15: { rowan: 'ROWAN HAS LEFT THE GROUP CHAT.', specs: 'CAN THE CAKE EVEN CATCH HIM?', jaado: 'KEEP FLYING. PROTECT THE WALLET.', tabahii: 'THEY SKIPPED LEG DAY FOR THIS.' }[selectedPilot], 20: 'CERTIFIED FREQUENT FLYER.' }[score] || `${score} PIPES. ABSOLUTE LEGEND.`);
+  if (score % 5 === 0) toast({ 5: 'FIVE PIPES. STILL ALIVE.', 10: 'DOUBLE DIGITS. WHO IS THIS GUY?', 15: { rowan: 'ROWAN HAS LEFT THE GROUP CHAT.', specs: 'CAN THE CAKE EVEN CATCH HIM?', jaado: 'KEEP FLYING. PROTECT THE WALLET.', tabahii: 'THEY SKIPPED LEG DAY FOR THIS.', bokuandagadu: 'TOO FAST FOR THE COMBO.' }[selectedPilot], 20: 'CERTIFIED FREQUENT FLYER.' }[score] || `${score} PIPES. ABSOLUTE LEGEND.`);
   if (!reducedMotion) for (let i = 0; i < 10; i++) particles.push({ x: state.bird.x + 14, y: state.bird.y, vx: (Math.random() - 0.4) * 130, vy: (Math.random() - 0.5) * 140, age: 0, life: 0.5, color: ['#fff8df', '#f2745b', '#9bafd0'][i % 3], size: 2 + Math.random() * 2 });
 }
 function render(now) {
@@ -394,7 +409,7 @@ document.querySelectorAll('.pilot-button').forEach((button) => button.addEventLi
   $('score').textContent = '0';
   $('game-toast').classList.remove('show'); clearTimeout(toastTimeout);
   updatePilot(); showScreen('ready');
-  announce(`${currentPilot().name} selected. ${{ dog: 'The original pilot is back.', cake: 'Cake class is now boarding.', money: 'Budget class is now boarding. Mind the landing fee.', dumbbell: 'Gym class is now boarding. Bring a spotter.' }[currentPilot().defeat]}`);
+  announce(`${currentPilot().name} selected. ${{ dog: 'The original pilot is back.', cake: 'Cake class is now boarding.', money: 'Budget class is now boarding. Mind the landing fee.', dumbbell: 'Gym class is now boarding. Bring a spotter.', snacksoap: 'Combo class is now boarding. Snacks and soap included.' }[currentPilot().defeat]}`);
 }));
 canvas.addEventListener('pointerdown', (event) => {
   if (event.button !== 0) return;
@@ -454,15 +469,8 @@ $('copy-button').addEventListener('click', async () => {
     announce('Clipboard unavailable. Your score is displayed on the button.');
   }
 });
-if (!document.fullscreenEnabled) $('fullscreen-button').hidden = true;
-$('fullscreen-button').addEventListener('click', async () => {
-  try {
-    if (document.fullscreenElement) await document.exitFullscreen(); else await frame.requestFullscreen();
-  } catch { toast('Fullscreen is unavailable in this browser.'); }
-  if (state.status === 'playing' && !paused) canvas.focus({ preventScroll: true });
-});
-document.addEventListener('fullscreenchange', () => {
-  $('fullscreen-button').setAttribute('aria-label', document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen');
-  fitCanvas();
+setupFullscreen({
+  host: $('fullscreen-host'), frame, button: $('fullscreen-button'), canvas, onResize: fitCanvas,
+  onExit() { if (state.status === 'playing' && !paused) canvas.focus({ preventScroll: true }); },
 });
 updateSoundButton(); updatePilot(); showScreen('ready'); fitCanvas(); requestAnimationFrame(render);
