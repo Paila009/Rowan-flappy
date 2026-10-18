@@ -1,6 +1,6 @@
 # Rowan Flappy
 
-A personal Flappy Bird style browser game starring Rowan, Captain Specs, and Jaado from Meesho, using the supplied original portraits and voice clips. Built with HTML, CSS, JavaScript, and Canvas, with no package install or build step required.
+A personal Flappy Bird style browser game starring Rowan, Captain Specs, Jaado from Meesho, and 2 bha dono tabahii, using the supplied original portraits and voice clips. Built with HTML, CSS, JavaScript, and Canvas, with no package install or build step required.
 
 ## Run locally
 
@@ -12,9 +12,9 @@ node scripts/serve.mjs
 
 Open [localhost:8080](http://localhost:8080/). Follow the game's on-screen controls to start, flap, pause, and play again. Browsers require a user interaction before audio can play.
 
-Choose one of three pilots and a difficulty before starting. Tap, click, Space, or Up Arrow to flap. P / Escape pauses, M toggles sound, and R restarts. Rowan uses his original voice clip and gets a cartoon Shih Tzu paw bonk after a defeat. Captain Specs alternates between two supplied voice clips on flaps and gets a special cake smash when a flight ends. Jaado from Meesho uses his supplied original portrait and voice, with a cartoon empty-wallet defeat showing a -30K money loss.
+Choose one of four pilots and a difficulty before starting. Tap, click, Space, or Up Arrow to flap. P / Escape pauses, M toggles sound, and R restarts. Rowan uses his original voice clip and gets a cartoon Shih Tzu paw bonk after a defeat. Captain Specs alternates between two supplied voice clips on flaps and gets a special cake smash when a flight ends. Jaado from Meesho uses his supplied original portrait and voice, with a cartoon empty-wallet defeat showing a -30K money loss. 2 bha dono tabahii uses his supplied original portrait and voice, with a cartoon dumbbell bonk after a defeat.
 
-Best scores are stored separately for each of the three pilots and every difficulty on the current device. Existing Rowan and Captain Specs scores are preserved, including legacy Rowan records. Leaving the tab automatically pauses a flight.
+Best scores are stored separately for each of the four pilots and every difficulty on the current device. All previous pilot voices and scores are preserved, including legacy Rowan records. Leaving the tab automatically pauses a flight.
 
 Run the simulation and audio checks with `node --test tests/*.test.mjs`. For a 390px responsive layout preview, open `/scripts/mobile-preview.html` on the local server. The server also supports `/Rowan-flappy/` to check the GitHub Pages project path.
 

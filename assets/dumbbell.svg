@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 70" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">The tiny gym dumbbell</title>
+  <desc id="desc">A cartoon dumbbell with chunky slate lavender weight plates, a dark grip, and mint green highlights.</desc>
+  <g stroke="#242822" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- A striped handle stays legible between the chunky plates. -->
+    <rect x="38" y="28" width="74" height="14" rx="5" fill="#51595d"/>
+    <path d="M50 31h50" stroke="#bfe0cd" stroke-width="2"/>
+    <path d="m60 32-3 7m12-7-3 7m12-7-3 7m12-7-3 7m12-7-3 7" stroke="#242822" stroke-width="2"/>
+    <!-- Three plates on each side, drawn from the outside inward. -->
+    <rect x="7" y="23" width="15" height="24" rx="5" fill="#9195ab"/>
+    <rect x="18" y="10" width="22" height="50" rx="6" fill="#b9bbd1"/>
+    <path d="M32 12v46" stroke="#9195ab" stroke-width="5"/>
+    <rect x="36" y="18" width="14" height="34" rx="4" fill="#9195ab"/>
+    <path d="M22 19v31m18-25v19" stroke="#d6eddf" stroke-width="3"/>
+    <rect x="128" y="23" width="15" height="24" rx="5" fill="#9195ab"/>
+    <rect x="110" y="10" width="22" height="50" rx="6" fill="#b9bbd1"/>
+    <path d="M124 12v46" stroke="#9195ab" stroke-width="5"/>
+    <rect x="100" y="18" width="14" height="34" rx="4" fill="#9195ab"/>
+    <path d="M114 19v31m-10-25v19" stroke="#d6eddf" stroke-width="3"/>
+    <!-- Little end caps make the silhouette feel like real gym equipment. -->
+    <path d="M8 30H4v10h4m134-10h4v10h-4" fill="#51595d" stroke-width="2.5"/>
+    <path d="M13 29v10m124-10v10" stroke="#d6eddf" stroke-width="2"/>
+  </g>
+</svg>

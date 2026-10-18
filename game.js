@@ -29,6 +29,14 @@ const PILOTS = {
     voices: [{ src: './assets/jaado-voice.ogg', fallback: './assets/jaado-voice.mp3' }],
     sky: ['#eddeb6', '#f0e7cd', '#e8edd6'], trail: '#b3cb87',
   },
+  tabahii: {
+    name: '2 bha dono tabahii', portrait: './assets/tabahii.png', title: '2 bha<br><span>dono tabahii</span>',
+    description: 'Two legends. One flight plan.<br>The gym has other plans.',
+    boarding: 'BUDDY SYSTEM. ZERO FLIGHT LICENSES.', airline: 'TABAHII AIR · GYM CLASS',
+    personality: 'TWO LEGENDS. ZERO QUALIFIED SPOTTERS.', defeat: 'dumbbell',
+    voices: [{ src: './assets/tabahii-voice.ogg', fallback: './assets/tabahii-voice.mp3' }],
+    sky: ['#cbdff0', '#e3e9ed', '#e7edd9'], trail: '#b1cce6',
+  },
 };
 
 const DEFEATS = {
@@ -49,6 +57,12 @@ const DEFEATS = {
     title: 'Flight lost.<br><span>Funds too.</span>', recordTitle: 'New record.<br><span>Same −30K.</span>',
     messages: ['That thumbs-up just got very expensive.', 'Budget flight. Thirty-thousand landing fee.', 'A decent flight. An indecent bill.', 'Legendary score. Legendary financial damage.'],
     announcement: 'A cartoon wallet empties and minus thirty thousand appears.', share: 'lost 30K on the landing', voice: true,
+  },
+  dumbbell: {
+    scene: 'dumbbell-scene', stamp: 'UNAUTHORIZED WEIGHT TRAINING',
+    title: 'Flight failed.<br><span>Gym called.</span>', recordTitle: 'New record.<br><span>Still bonked.</span>',
+    messages: ['The landing came with complimentary weights.', 'A light flight. A very heavy consequence.', 'Nobody said this flight included leg day.', 'Big score. Bigger dumbbell. No spotter.'],
+    announcement: 'A cartoon dumbbell bonks the pilot photo with stars and a BONK effect.', share: 'got bonked by a dumbbell', voice: true,
   },
 };
 
@@ -335,7 +349,7 @@ function drawParticles(dt) {
 function onScore(score) {
   $('score').textContent = score;
   sound.chime(); scorePulse = 0.25;
-  if (score % 5 === 0) toast({ 5: 'FIVE PIPES. STILL ALIVE.', 10: 'DOUBLE DIGITS. WHO IS THIS GUY?', 15: { rowan: 'ROWAN HAS LEFT THE GROUP CHAT.', specs: 'CAN THE CAKE EVEN CATCH HIM?', jaado: 'KEEP FLYING. PROTECT THE WALLET.' }[selectedPilot], 20: 'CERTIFIED FREQUENT FLYER.' }[score] || `${score} PIPES. ABSOLUTE LEGEND.`);
+  if (score % 5 === 0) toast({ 5: 'FIVE PIPES. STILL ALIVE.', 10: 'DOUBLE DIGITS. WHO IS THIS GUY?', 15: { rowan: 'ROWAN HAS LEFT THE GROUP CHAT.', specs: 'CAN THE CAKE EVEN CATCH HIM?', jaado: 'KEEP FLYING. PROTECT THE WALLET.', tabahii: 'THEY SKIPPED LEG DAY FOR THIS.' }[selectedPilot], 20: 'CERTIFIED FREQUENT FLYER.' }[score] || `${score} PIPES. ABSOLUTE LEGEND.`);
   if (!reducedMotion) for (let i = 0; i < 10; i++) particles.push({ x: state.bird.x + 14, y: state.bird.y, vx: (Math.random() - 0.4) * 130, vy: (Math.random() - 0.5) * 140, age: 0, life: 0.5, color: ['#fff8df', '#f2745b', '#9bafd0'][i % 3], size: 2 + Math.random() * 2 });
 }
 function render(now) {
@@ -380,7 +394,7 @@ document.querySelectorAll('.pilot-button').forEach((button) => button.addEventLi
   $('score').textContent = '0';
   $('game-toast').classList.remove('show'); clearTimeout(toastTimeout);
   updatePilot(); showScreen('ready');
-  announce(`${currentPilot().name} selected. ${{ dog: 'The original pilot is back.', cake: 'Cake class is now boarding.', money: 'Budget class is now boarding. Mind the landing fee.' }[currentPilot().defeat]}`);
+  announce(`${currentPilot().name} selected. ${{ dog: 'The original pilot is back.', cake: 'Cake class is now boarding.', money: 'Budget class is now boarding. Mind the landing fee.', dumbbell: 'Gym class is now boarding. Bring a spotter.' }[currentPilot().defeat]}`);
 }));
 canvas.addEventListener('pointerdown', (event) => {
   if (event.button !== 0) return;
