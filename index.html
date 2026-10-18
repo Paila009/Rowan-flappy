@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f5f3eb">
-  <meta name="description" content="Two friends. Tiny wings. Absolutely no flight experience. Choose Rowan or Captain Specs and fly into some deeply questionable consequences.">
+  <meta name="description" content="Three friends. Tiny wings. Absolutely no flight experience. Choose Rowan, Captain Specs, or Jaado from Meesho and fly into some deeply questionable consequences.">
   <title>Flappy Rowan — Cleared for takeoff.</title>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="preload" href="./assets/rowan.png" as="image">
   <link rel="preload" href="./assets/captain-specs.png" as="image">
+  <link rel="preload" href="./assets/jaado.png" as="image">
   <link rel="stylesheet" href="./styles.css">
   <script type="module" src="./game.js"></script>
 </head>
@@ -32,7 +33,7 @@
       <span>flappy rowan<span class="brand-dot">.</span></span>
     </a>
     <div class="header-actions">
-      <span class="edition">THE FRIEND EDITION <span>002</span></span>
+      <span class="edition">THE FRIEND EDITION <span>003</span></span>
       <button class="text-button" id="help-button" aria-haspopup="dialog"><span class="question-mark">?</span> How to play</button>
       <button class="icon-button sound-button" id="sound-button" aria-label="Mute sound" aria-pressed="false" title="Toggle sound (M)"><svg><use href="#i-sound"/></svg></button>
     </div>
@@ -42,13 +43,14 @@
     <section class="intro" aria-labelledby="page-title">
       <div class="eyebrow"><span class="status-dot"></span> ZERO EXPERIENCE. MAXIMUM CONFIDENCE.</div>
       <h1 id="page-title">Born to fly.<br><span>Probably.</span><svg class="title-spark" viewBox="0 0 60 60" aria-hidden="true"><path d="m29 3 4 18 16-9-9 17 18 3-18 4 9 16-17-10-4 16-3-17-17 9 10-17L2 29l18-3L10 11l16 10Z"/></svg></h1>
-      <p class="intro-copy" id="pilot-intro">Two pilots. Tiny wings.<br>Pick your favourite flight risk.</p>
+      <p class="intro-copy" id="pilot-intro">Three pilots. Tiny wings.<br>Pick your favourite flight risk.</p>
 
       <fieldset class="pilot-picker">
         <legend>CHOOSE YOUR MAIN CHARACTER</legend>
         <div class="pilot-options" role="group" aria-label="Pilot">
           <button class="pilot-button is-selected" data-pilot="rowan" aria-pressed="true"><img src="./assets/rowan.png" alt="" width="39" height="42"><span><strong>Rowan</strong><small>THE ORIGINAL</small></span><span class="pilot-check" aria-hidden="true">✓</span></button>
           <button class="pilot-button" data-pilot="specs" aria-pressed="false"><img src="./assets/captain-specs.png" alt="" width="39" height="42"><span><strong>Captain Specs</strong><small>THE CAKE MAGNET</small></span><span class="pilot-check" aria-hidden="true">✓</span></button>
+          <button class="pilot-button" data-pilot="jaado" aria-pressed="false"><img src="./assets/jaado.png" alt="" width="39" height="42"><span><strong>Jaado from Meesho</strong><small>THE −30K CLUB</small></span><span class="pilot-check" aria-hidden="true">✓</span></button>
         </div>
         <div class="pilot-footnote"><span id="pilot-personality">ONE VOICE. ONE VERY JUDGY DOG.</span><button id="voice-preview" class="voice-preview" aria-label="Preview Rowan's voice"><svg><use href="#i-sound"/></svg> Mic check</button></div>
       </fieldset>
@@ -106,6 +108,13 @@
             <span class="cream-crumb crumb-one" aria-hidden="true"></span><span class="cream-crumb crumb-two" aria-hidden="true"></span><span class="cream-crumb crumb-three" aria-hidden="true"></span>
             <span class="cake-confetti" aria-hidden="true">✦ <span>✧</span> ✦</span>
           </div>
+          <div class="money-scene" id="money-scene" aria-label="Jaado from Meesho loses thirty thousand as banknotes fly from an empty wallet" hidden>
+            <img class="money-victim" src="./assets/jaado.png" alt="Jaado from Meesho, receiving a very expensive landing bill" width="58" height="65">
+            <img class="empty-wallet" src="./assets/empty-wallet.svg" alt="An empty cartoon wallet" width="105" height="70">
+            <span class="flying-note note-one" aria-hidden="true"><i></i></span><span class="flying-note note-two" aria-hidden="true"><i></i></span><span class="flying-note note-three" aria-hidden="true"><i></i></span>
+            <span class="falling-coin coin-one" aria-hidden="true">✦</span><span class="falling-coin coin-two" aria-hidden="true">✦</span><span class="falling-coin coin-three" aria-hidden="true">✦</span>
+            <strong class="money-loss" aria-hidden="true">−30K</strong><span class="wallet-caption" aria-hidden="true">POOF. THERE IT GOES.</span>
+          </div>
           <h2 id="result-title">Gravity wins.<br><span>This time.</span></h2>
           <p id="result-message">Even legends need a practice run.</p>
           <div class="result-scores"><div><span>THIS FLIGHT</span><strong id="final-score">0</strong></div><span class="result-score-divider"></span><div><span>PERSONAL BEST</span><strong id="final-best">0</strong></div></div>
@@ -133,7 +142,7 @@
   <dialog id="help-dialog" aria-labelledby="help-title">
     <button class="icon-button dialog-close" id="close-help" aria-label="Close instructions"><svg><use href="#i-close"/></svg></button>
     <span class="eyebrow">YOUR PRE-FLIGHT BRIEFING</span><h2 id="help-title">A very short<br>flight school.</h2>
-    <ol class="instructions"><li><span>01</span><div><strong>Pick a pilot. Give him a lift.</strong><p>Choose Rowan or Captain Specs, then tap, click, or press Space / ↑. Each pilot has his own voice; Specs alternates two clips.</p></div></li><li><span>02</span><div><strong>Mind the gap. And the consequences.</strong><p>Each pipe pair earns one point. Rowan gets a Shih Tzu bonk when he crashes. Specs gets a face full of cake.</p></div></li><li><span>03</span><div><strong>Run it back.</strong><p>Choose Chill, Classic, or Chaos before a flight. Best scores are saved separately for every pilot and mode on this device.</p></div></li></ol>
+    <ol class="instructions"><li><span>01</span><div><strong>Pick a pilot. Give him a lift.</strong><p>Choose Rowan, Captain Specs, or Jaado from Meesho, then tap, click, or press Space / ↑. Each pilot has his own voice; Specs alternates two clips.</p></div></li><li><span>02</span><div><strong>Mind the gap. And the consequences.</strong><p>Each pipe pair earns one point. Rowan gets a Shih Tzu bonk, Specs gets cake, and Jaado from Meesho gets an empty wallet and −30K.</p></div></li><li><span>03</span><div><strong>Run it back.</strong><p>Choose Chill, Classic, or Chaos before a flight. Best scores are saved separately for every pilot and mode on this device.</p></div></li></ol>
     <div class="help-shortcuts"><span><kbd>P</kbd> / <kbd>ESC</kbd> pause</span><span><kbd>M</kbd> sound</span><span><kbd>R</kbd> restart</span></div>
     <button class="primary-button" id="got-it-button">Cleared for takeoff <svg><use href="#i-arrow"/></svg></button>
   </dialog>

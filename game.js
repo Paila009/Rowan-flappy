@@ -21,6 +21,35 @@ const PILOTS = {
     ],
     sky: ['#ded4ed', '#efe1e7', '#f1ebd9'], trail: '#f7b2b9',
   },
+  jaado: {
+    name: 'Jaado from Meesho', portrait: './assets/jaado.png', title: 'Jaado<br><span>from Meesho.</span>',
+    description: 'Budget airline. Premium damage.<br>Every landing comes at a cost.',
+    boarding: 'LOW COST. HIGH CONSEQUENCES.', airline: 'MEESHO AIR · BUDGET CLASS',
+    personality: 'ONE VOICE. THIRTY THOUSAND PROBLEMS.', defeat: 'money',
+    voices: [{ src: './assets/jaado-voice.ogg', fallback: './assets/jaado-voice.mp3' }],
+    sky: ['#eddeb6', '#f0e7cd', '#e8edd6'], trail: '#b3cb87',
+  },
+};
+
+const DEFEATS = {
+  dog: {
+    scene: 'bonk-scene', stamp: 'THE SHIH TZU HAS A WORD',
+    title: 'Bad flight.<br><span>Dog fight.</span>', recordTitle: 'New record.<br><span>Still bonked.</span>',
+    messages: ['Your flight instructor is deeply disappointed.', 'The Shih Tzu would like to speak to the pilot.', 'Great effort. The dog remains unimpressed.', 'Legendary flight. Mandatory bonk anyway.'],
+    announcement: 'A Shih Tzu bonks Rowan.', share: 'got bonked by a Shih Tzu', voice: false,
+  },
+  cake: {
+    scene: 'cake-scene', stamp: 'COMPLIMENTARY IN-FACE MEAL',
+    title: 'Crash landing.<br><span>Cake pending.</span>', recordTitle: 'New record.<br><span>Extra frosting.</span>',
+    messages: ['That was a piece of cake. To the face.', 'Your in-flight dessert has arrived. Aggressively.', 'Good flight. Terrible day for those glasses.', 'A legendary pilot. A fully frosted legend.'],
+    announcement: 'Cake smashes into Captain Specs.', share: 'got a cake smashed in my face', voice: true,
+  },
+  money: {
+    scene: 'money-scene', stamp: 'LANDING FEE: ABSOLUTELY BRUTAL',
+    title: 'Flight lost.<br><span>Funds too.</span>', recordTitle: 'New record.<br><span>Same −30K.</span>',
+    messages: ['That thumbs-up just got very expensive.', 'Budget flight. Thirty-thousand landing fee.', 'A decent flight. An indecent bill.', 'Legendary score. Legendary financial damage.'],
+    announcement: 'A cartoon wallet empties and minus thirty thousand appears.', share: 'lost 30K on the landing', voice: true,
+  },
 };
 
 const $ = (id) => document.getElementById(id);
@@ -104,8 +133,7 @@ function updatePilot() {
   $('pilot-personality').textContent = pilot.personality;
   $('voice-preview').setAttribute('aria-label', `Preview ${pilot.name}'s voice`);
   canvas.setAttribute('aria-label', `Fly as ${pilot.name}. Press Space or Up Arrow, click, or tap to flap. Avoid pipes and the ground.`);
-  $('bonk-scene').hidden = pilot.defeat !== 'dog';
-  $('cake-scene').hidden = pilot.defeat !== 'cake';
+  for (const [type, defeat] of Object.entries(DEFEATS)) $(defeat.scene).hidden = pilot.defeat !== type;
   sound.setPilot({ id: selectedPilot, voices: pilot.voices.map((voice) => ({
     src: new URL(voice.src, import.meta.url).href,
     ...(voice.fallback ? { fallback: new URL(voice.fallback, import.meta.url).href } : {}),
@@ -181,7 +209,7 @@ function endFlight() {
   gameOverAt = performance.now();
   sound.silence();
   if (!reducedMotion) shake = 0.22;
-  const cake = currentPilot().defeat === 'cake';
+  const defeat = DEFEATS[currentPilot().defeat];
   const newBest = state.score > currentBest();
   if (newBest) {
     bests[selectedPilot][selectedMode] = state.score;
@@ -189,19 +217,15 @@ function endFlight() {
   }
   $('final-score').textContent = state.score;
   $('final-best').textContent = currentBest();
-  $('result-stamp').textContent = newBest ? 'A NEW PERSONAL BEST!' : cake ? 'COMPLIMENTARY IN-FACE MEAL' : 'THE SHIH TZU HAS A WORD';
+  $('result-stamp').textContent = newBest ? 'A NEW PERSONAL BEST!' : defeat.stamp;
   $('result-stamp').classList.toggle('is-record', newBest);
-  $('result-title').innerHTML = cake
-    ? newBest ? 'New record.<br><span>Extra frosting.</span>' : 'Crash landing.<br><span>Cake pending.</span>'
-    : newBest ? 'New record.<br><span>Still bonked.</span>' : 'Bad flight.<br><span>Dog fight.</span>';
-  $('result-message').textContent = cake
-    ? state.score === 0 ? 'That was a piece of cake. To the face.' : state.score < 5 ? 'Your in-flight dessert has arrived. Aggressively.' : state.score < 15 ? 'Good flight. Terrible day for those glasses.' : 'A legendary pilot. A fully frosted legend.'
-    : state.score === 0 ? 'Your flight instructor is deeply disappointed.' : state.score < 5 ? 'The Shih Tzu would like to speak to the pilot.' : state.score < 15 ? 'Great effort. The dog remains unimpressed.' : 'Legendary flight. Mandatory bonk anyway.';
+  $('result-title').innerHTML = newBest ? defeat.recordTitle : defeat.title;
+  $('result-message').textContent = defeat.messages[state.score === 0 ? 0 : state.score < 5 ? 1 : state.score < 15 ? 2 : 3];
   $('copy-button').innerHTML = '<svg><use href="#i-copy"/></svg> Copy my score';
   showScreen('over');
-  if (cake) sound.playDefeat();
+  if (defeat.voice) sound.playDefeat();
   if (newBest) sound.chime(true);
-  announce(`Flight over. ${currentPilot().name} cleared ${state.score} ${state.score === 1 ? 'pipe' : 'pipes'}. ${newBest ? 'New personal best! ' : ''}${cake ? 'Cake smashes into Captain Specs.' : 'A Shih Tzu bonks Rowan.'} Press Space to fly again.`);
+  announce(`Flight over. ${currentPilot().name} cleared ${state.score} ${state.score === 1 ? 'pipe' : 'pipes'}. ${newBest ? 'New personal best! ' : ''}${defeat.announcement} Press Space to fly again.`);
 }
 
 // The scene is drawn in a fixed coordinate system, independent of display size.
@@ -295,7 +319,7 @@ function drawBird() {
   ctx.beginPath(); ctx.arc(0, 0, 24, 0, Math.PI * 2); ctx.fillStyle = '#fff7df'; ctx.fill();
   ctx.save(); ctx.beginPath(); ctx.arc(0, 0, 21.5, 0, Math.PI * 2); ctx.clip();
   if (portrait.complete && portrait.naturalWidth) ctx.drawImage(portrait, 0, 0, portrait.naturalWidth, portrait.naturalHeight, -22, -23, 44, 49);
-  else { ctx.fillStyle = '#f2745b'; ctx.fillRect(-23, -23, 46, 46); ctx.font = 'bold 28px Arial'; ctx.fillStyle = '#242822'; ctx.fillText('R', -10, 10); }
+  else { ctx.fillStyle = '#f2745b'; ctx.fillRect(-23, -23, 46, 46); ctx.font = 'bold 28px Arial'; ctx.fillStyle = '#242822'; ctx.fillText(currentPilot().name[0], -10, 10); }
   ctx.restore(); ctx.strokeStyle = '#28382b'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(0, 0, 24, 0, Math.PI * 2); ctx.stroke();
   ctx.restore();
 }
@@ -311,7 +335,7 @@ function drawParticles(dt) {
 function onScore(score) {
   $('score').textContent = score;
   sound.chime(); scorePulse = 0.25;
-  if (score % 5 === 0) toast({ 5: 'FIVE PIPES. STILL ALIVE.', 10: 'DOUBLE DIGITS. WHO IS THIS GUY?', 15: selectedPilot === 'specs' ? 'CAN THE CAKE EVEN CATCH HIM?' : 'ROWAN HAS LEFT THE GROUP CHAT.', 20: 'CERTIFIED FREQUENT FLYER.' }[score] || `${score} PIPES. ABSOLUTE LEGEND.`);
+  if (score % 5 === 0) toast({ 5: 'FIVE PIPES. STILL ALIVE.', 10: 'DOUBLE DIGITS. WHO IS THIS GUY?', 15: { rowan: 'ROWAN HAS LEFT THE GROUP CHAT.', specs: 'CAN THE CAKE EVEN CATCH HIM?', jaado: 'KEEP FLYING. PROTECT THE WALLET.' }[selectedPilot], 20: 'CERTIFIED FREQUENT FLYER.' }[score] || `${score} PIPES. ABSOLUTE LEGEND.`);
   if (!reducedMotion) for (let i = 0; i < 10; i++) particles.push({ x: state.bird.x + 14, y: state.bird.y, vx: (Math.random() - 0.4) * 130, vy: (Math.random() - 0.5) * 140, age: 0, life: 0.5, color: ['#fff8df', '#f2745b', '#9bafd0'][i % 3], size: 2 + Math.random() * 2 });
 }
 function render(now) {
@@ -356,7 +380,7 @@ document.querySelectorAll('.pilot-button').forEach((button) => button.addEventLi
   $('score').textContent = '0';
   $('game-toast').classList.remove('show'); clearTimeout(toastTimeout);
   updatePilot(); showScreen('ready');
-  announce(`${currentPilot().name} selected. ${currentPilot().defeat === 'cake' ? 'Cake class is now boarding.' : 'The original pilot is back.'}`);
+  announce(`${currentPilot().name} selected. ${{ dog: 'The original pilot is back.', cake: 'Cake class is now boarding.', money: 'Budget class is now boarding. Mind the landing fee.' }[currentPilot().defeat]}`);
 }));
 canvas.addEventListener('pointerdown', (event) => {
   if (event.button !== 0) return;
@@ -405,7 +429,7 @@ $('help-dialog').addEventListener('close', () => {
   helpPausedFlight = false;
 });
 $('copy-button').addEventListener('click', async () => {
-  const consequence = currentPilot().defeat === 'cake' ? 'got a cake smashed in my face' : 'got bonked by a Shih Tzu';
+  const consequence = DEFEATS[currentPilot().defeat].share;
   const scoreText = `I cleared ${state.score} ${state.score === 1 ? 'pipe' : 'pipes'} as ${currentPilot().name} on Flappy Rowan (${MODES[selectedMode].label}) and ${consequence}. Your turn! ${location.href.split('?')[0].split('#')[0]}`;
   try {
     await navigator.clipboard.writeText(scoreText);
